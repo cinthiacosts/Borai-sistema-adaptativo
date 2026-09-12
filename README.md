@@ -454,7 +454,7 @@ Status do Projeto
 
 ✅ Entrega 02 --- Concluída
 
-🟡 Entrega 03 --- Concluída
+✅ Entrega 03 --- Contexto e Eventos
 
 ⏳ Entrega 04
 
