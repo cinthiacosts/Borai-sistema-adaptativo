@@ -121,7 +121,7 @@ validação das recomendações e fluxos do usuário.
 
 Entregas
 
-✅ Entrega 01 --- Equipe e Definição do Projeto
+Entrega 01 — Equipe e Definição do Projeto
 
 Data: 30/08/2026
 Status: Concluída
@@ -150,7 +150,7 @@ Miro oficial
 
 GitHub oficial
 
-✅ Entrega 02 --- Problema e Proposta de Valor
+Entrega 02 — Problema e Proposta de Valor
 
 Data: 06/09/2026
 Status: Concluída
@@ -289,7 +289,7 @@ Informações reunidas em um único ambiente
 
 Apoio à decisão sobre onde ir e o que fazer
 
-🟡 Entrega 03 --- Contexto e Eventos
+Entrega 03 — Contexto e Eventos
 
 Data: 13/09/2026
 Status: Concluída
@@ -297,7 +297,7 @@ Status: Concluída
 Nesta etapa foi desenvolvido o Mapa de Contexto do Boraí e elaborado o
 Catálogo Inicial de Eventos do sistema.
 
-🗺️ Mapa de Contexto
+Mapa de Contexto
 
 O Mapa de Contexto representa os principais elementos que influenciam o
 funcionamento e a adaptação do Boraí.
@@ -332,7 +332,7 @@ Usuário → Evento/Interação → Boraí → Análise do perfil, contexto e
 histórico → Recomendação → Interação do usuário → Atualização do
 histórico → Adaptação futura
 
-📡 Catálogo Inicial de Eventos
+Catálogo Inicial de Eventos
 
 Foram definidos inicialmente oito eventos relevantes para o
 comportamento do sistema:
@@ -378,7 +378,7 @@ alterada                                   modificadas     preferências    perf
 anteriores      recomendações
 futuras
 
-🔄 Relação com o Sistema Adaptativo
+Relação com o Sistema Adaptativo
 
 Os eventos definidos permitem que o Boraí reconheça mudanças no
 comportamento ou no contexto do usuário.
@@ -386,7 +386,7 @@ comportamento ou no contexto do usuário.
 A proposta é que o sistema utilize informações do perfil, contexto e
 histórico para adaptar as recomendações apresentadas ao usuário.
 
-📋 Artefatos atualizados
+Artefatos atualizados
 
 Mapa de Contexto atualizado no Miro.
 
@@ -396,41 +396,128 @@ Evolução semanal registrada no board.
 
 README atualizado com a Entrega 03.
 
+Entrega 04 — Estados e Jornada
+
+Data: 20/09/2026
+Status: Concluída
+
+Nesta etapa foram definidos os estados do sistema, suas transições, os eventos que provocam mudanças, a jornada convencional e a jornada adaptativa do Boraí, além dos principais pontos de decisão e possíveis adaptações da interface.
+
+Estados, Transições e Eventos
+
+O funcionamento adaptativo do Boraí foi representado por meio dos principais estados percorridos pelo sistema durante a interação com o usuário.
+
+Fluxo principal:
+
+Início → Perfil identificado → Contexto analisado → Busca ou solicitação de recomendação → Recomendações geradas → Interação do usuário → Feedback registrado → Perfil e histórico atualizados → Nova adaptação
+
+As mudanças entre os estados podem ser provocadas por eventos como:
+
+Preferência informada ou alterada
+
+Localização atualizada
+
+Busca realizada
+
+Recomendação solicitada
+
+Lugar ou evento visualizado
+
+Avaliação ou feedback registrado
+
+Alteração do contexto
+
+Esses eventos permitem que o sistema atualize informações e adapte seu comportamento conforme as interações do usuário.
+
+Jornada Convencional e Jornada Adaptativa
+
+Jornada convencional:
+
+Usuário entra → Escolhe uma categoria → Define filtros → Realiza uma busca → Analisa e compara opções → Escolhe onde ir ou o que fazer.
+
+Jornada adaptativa do Boraí:
+
+Usuário entra → Sistema recupera perfil e histórico → Identifica o contexto atual → Analisa preferências e localização → Gera recomendações personalizadas → Usuário interage → Interação é registrada → Sistema adapta recomendações futuras.
+
+Na jornada adaptativa, o Boraí utiliza informações do perfil, histórico e contexto para reduzir o esforço do usuário e apresentar opções mais compatíveis com seus interesses.
+
+Pontos de Decisão
+
+A localização está disponível?
+
+Existe histórico do usuário?
+
+Existem preferências cadastradas?
+
+Qual é o horário e o contexto atual?
+
+Existem opções compatíveis?
+
+O usuário aceitou, ignorou ou rejeitou uma recomendação?
+
+Houve avaliação ou feedback?
+
+Adaptações da Interface
+
+Priorizar categorias de maior interesse
+
+Destacar opções próximas
+
+Reorganizar recomendações conforme a relevância
+
+Considerar horário e contexto atual
+
+Destacar preço, segurança ou avaliações quando relevantes
+
+Reduzir opções pouco compatíveis
+
+Personalizar recomendações futuras com base nas interações
+
+Artefatos Atualizados
+
+Diagrama de Estados, Transições e Eventos no Miro
+
+Jornada Convencional e Jornada Adaptativa no Miro
+
+Pontos de Decisão e Adaptações da Interface no Miro
+
+Evolução da Entrega 04 registrada no quadro
+
+README atualizado com a Entrega 04
+
 Próximas Entregas
 
-Entrega 04 --- Estados e Jornada
-
-20/09/2026
-
-Estados, transições, eventos e jornada convencional versus adaptativa.
-
-Entrega 05 --- Arquitetura e Memória
+Entrega 05 — Arquitetura e Memória
 
 27/09/2026
 
-Arquitetura preliminar, Node.js, banco NoSQL, modelo de dados, contexto,
-histórico e decisões.
+Arquitetura preliminar, Node.js, banco NoSQL, modelo de dados, contexto, histórico e decisões.
 
-Entrega 06 --- Interface e Fluxo
+Entrega 06 — Interface e Fluxo
 
 04/10/2026
 
-Interface React inicial, componentes principais, fluxo do usuário e
-integração com backend.
+Interface React inicial, componentes principais, fluxo do usuário e integração com backend.
 
-Entrega 07 --- IA e Autonomia
+Entrega 07 — IA e Autonomia
 
 11/10/2026
 
-Integração com IA, regras de negócio, recomendações justificadas e
-mecanismos de supervisão humana.
+Integração com IA, regras de negócio, recomendações justificadas e mecanismos de supervisão humana.
 
-Entrega 08 --- MVP Final
+Entrega 08 — MVP Final
 
 18/10/2026
 
-MVP completo com React, Node.js, NoSQL, IA, human-in-the-loop, trilha de
-auditoria, Swagger, Miro e README atualizados.
+MVP completo com React, Node.js, NoSQL, IA, human-in-the-loop, trilha de auditoria, Swagger, Miro e README atualizados.
+
+Mostra de Estágio
+
+22/10/2026
+
+Apresentação pública do MVP.
+
+Miro e README atualizados.
 
 Mostra de Estágio
 
@@ -442,7 +529,7 @@ Miro
 
 Quadro oficial do projeto:
 
-https://miro.com/welcomeonboard/R2FzemJ2aVh6RWlFTGFiaWR4K0ZlVmg1bGQ2SUF3ckJxemxPdlpmY09HVWM3SFpSWFRjMEtsbDZ6Q1NQL0ZqOWJiT1Q3ZWZidUhlZDRtTm4xMS9xdmV3dFlFUmZvbFJpQ2JNcXphWFUzM3NsZGZENWRjRUVVS1dPWjZqeDR4OVl3VHhHVHd5UWtSM1BidUtUYmxycDRnPT0hdjE=?share_link_id=626071315637
+https://miro.com/app/board/uXjVHtf3tbU=/?share_link_id=642758879002
 
 Repositório GitHub
 
@@ -450,18 +537,11 @@ https://github.com/cinthiacosts/Borai-sistema-adaptativo
 
 Status do Projeto
 
-✅ Entrega 01 --- Concluída
-
-✅ Entrega 02 --- Concluída
-
-✅ Entrega 03 --- Contexto e Eventos
-
-⏳ Entrega 04
-
-⏳ Entrega 05
-
-⏳ Entrega 06
-
-⏳ Entrega 07
-
-⏳ Entrega 08
+Entrega 01 — Concluída
+Entrega 02 — Concluída
+Entrega 03 — Contexto e Eventos — Concluída
+Entrega 04 — Estados e Jornada — Concluída
+Entrega 05 — Próxima etapa
+Entrega 06 — Pendente
+Entrega 07 — Pendente
+Entrega 08 — Pendente
