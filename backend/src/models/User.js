@@ -1,0 +1,70 @@
+const mongoose = require('mongoose')
+
+const interactionSchema = new mongoose.Schema(
+  {
+    item: {
+      type: String,
+      required: true
+    },
+    categoria: {
+      type: String,
+      required: true
+    },
+    acao: {
+      type: String,
+      enum: ['visualizou', 'salvou', 'aprovou', 'rejeitou', 'avaliou'],
+      required: true
+    },
+    avaliacao: {
+      type: Number,
+      min: 1,
+      max: 5,
+      default: null
+    },
+    data: {
+      type: Date,
+      default: Date.now
+    }
+  },
+  { _id: false }
+)
+
+const userSchema = new mongoose.Schema(
+  {
+    nome: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    preferencias: {
+      type: [String],
+      default: []
+    },
+
+    contextoAtual: {
+      localizacao: {
+        type: String,
+        default: null
+      },
+      categoria: {
+        type: String,
+        default: null
+      },
+      atualizadoEm: {
+        type: Date,
+        default: Date.now
+      }
+    },
+
+    historico: {
+      type: [interactionSchema],
+      default: []
+    }
+  },
+  {
+    timestamps: true
+  }
+)
+
+module.exports = mongoose.model('User', userSchema)
