@@ -4,11 +4,11 @@ const User = require('../models/User')
 
 const {
   categoriaValida,
-  criarContexto
+  criarContexto,
 } = require('../business/businessRules')
 
 const {
-  gerarRecomendacoes
+  gerarRecomendacoes,
 } = require('../services/recommendationService')
 
 const router = express.Router()
@@ -18,15 +18,15 @@ router.post('/', async (req, res) => {
     const {
       userId = null,
       localizacao = 'Manaus - AM',
-      categoria = 'passeio',
-      preferencias = []
+      categoria = 'lazer',
+      preferencias = [],
     } = req.body
 
     // Valida a categoria informada
     if (!categoriaValida(categoria)) {
       return res.status(400).json({
         erro: 'Categoria inválida.',
-        mensagem: 'Escolha uma categoria disponível no Boraí.'
+        mensagem: 'Escolha uma categoria disponível no Boraí.',
       })
     }
 
@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
 
       if (!usuario) {
         return res.status(404).json({
-          erro: 'Usuário não encontrado.'
+          erro: 'Usuário não encontrado.',
         })
       }
 
@@ -58,33 +58,33 @@ router.post('/', async (req, res) => {
       localizacao: localizacaoUsuario,
       categoria,
       filtros: {
-        preferencias: preferenciasUsuario
-      }
+        preferencias: preferenciasUsuario,
+      },
     })
 
-    // Gera recomendações considerando perfil e histórico
-    const recomendacoes = gerarRecomendacoes({
+    // Consulta o MongoDB e gera recomendações adaptadas
+    const recomendacoes = await gerarRecomendacoes({
       categoria: contexto.categoria,
       preferencias: preferenciasUsuario,
-      historico: historicoUsuario
+      historico: historicoUsuario,
     })
 
     return res.status(200).json({
       usuario: usuario
         ? {
             id: usuario._id,
-            nome: usuario.nome
+            nome: usuario.nome,
           }
         : null,
       contexto,
       memoriaUtilizada: historicoUsuario.length,
       total: recomendacoes.length,
-      recomendacoes
+      recomendacoes,
     })
   } catch (erro) {
     return res.status(400).json({
       erro: 'Erro ao gerar recomendações.',
-      mensagem: erro.message
+      mensagem: erro.message,
     })
   }
 })

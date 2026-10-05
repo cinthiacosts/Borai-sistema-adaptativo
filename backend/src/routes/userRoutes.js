@@ -2,15 +2,23 @@ const express = require('express')
 
 const {
   criarUsuario,
+  cadastrarUsuario,
+  loginUsuario,
   buscarUsuario,
   atualizarUsuario,
-  registrarInteracao
+  registrarInteracao,
 } = require('../controllers/userController')
 
 const router = express.Router()
 
 // Cria um novo perfil
 router.post('/', criarUsuario)
+
+// Cadastro de nova conta
+router.post('/cadastro', cadastrarUsuario)
+
+// Login
+router.post('/login', loginUsuario)
 
 // Busca um perfil pelo ID
 router.get('/:id', buscarUsuario)

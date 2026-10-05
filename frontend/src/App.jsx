@@ -1,204 +1,1229 @@
+import { useEffect, useState } from 'react'
+
 import './App.css'
+
 import logoBorai from './assets/logo-borai-valida.png'
+import loginBorai from './assets/login-borai.png'
+
+import {
+  buscarEstabelecimentos,
+  buscarRecomendacoes,
+  cadastrarUsuario,
+  loginUsuario,
+} from './services/api'
+
+import MapaBorai from './components/MapaBorai'
 
 const categorias = [
-  'Restaurantes',
-  'Bares',
-  'Eventos',
-  'Cinemas',
-  'Teatros',
-  'Museus',
-  'Passeios',
-  'Shoppings',
+  { nome: 'Restaurantes', valor: 'restaurante', icone: '🍴' },
+  { nome: 'Cafeterias', valor: 'cafeteria', icone: '☕' },
+  { nome: 'Bares', valor: 'bar', icone: '🍺' },
+  { nome: 'Eventos', valor: 'evento', icone: '🎵' },
+  { nome: 'Hotéis', valor: 'hotel', icone: '🧳' },
+  { nome: 'Lazer', valor: 'lazer', icone: '🌳' },
 ]
 
-const recomendacoes = [
+const preferenciasCadastro = [
   {
-    nome: 'Passeio pelo Centro Histórico',
-    categoria: 'Passeio',
-    localizacao: 'Centro, Manaus',
-    motivo: 'Combina com seu interesse por cultura e experiências locais.',
+    nome: 'Gastronomia',
+    valor: 'restaurante',
+    icone: '🍴',
   },
   {
-    nome: 'Restaurante Regional',
-    categoria: 'Restaurante',
-    localizacao: 'Adrianópolis, Manaus',
-    motivo:
-      'Recomendado com base na sua localização e preferência por gastronomia.',
+    nome: 'Cafeterias',
+    valor: 'cafeteria',
+    icone: '☕',
   },
   {
-    nome: 'Evento Cultural',
-    categoria: 'Evento',
-    localizacao: 'Manaus',
-    motivo:
-      'Selecionado pelo contexto atual e pelas suas preferências.',
+    nome: 'Bares',
+    valor: 'bar',
+    icone: '🍺',
+  },
+  {
+    nome: 'Eventos',
+    valor: 'evento',
+    icone: '🎵',
+  },
+  {
+    nome: 'Hotéis',
+    valor: 'hotel',
+    icone: '🧳',
+  },
+  {
+    nome: 'Natureza e lazer',
+    valor: 'lazer',
+    icone: '🌳',
   },
 ]
+
+const imagensPorCategoria = {
+  restaurante:
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=700&q=80',
+
+  cafeteria:
+    'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=80',
+
+  bar:
+    'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=700&q=80',
+
+  evento:
+    'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=700&q=80',
+
+  hotel:
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=700&q=80',
+
+  lazer:
+    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=700&q=80',
+}
+
+function formatarCategoria(categoria) {
+  if (!categoria) return 'Lugar'
+
+  return (
+    categoria.charAt(0).toUpperCase() +
+    categoria.slice(1)
+  )
+}
+
+function obterIniciais(nome) {
+  if (!nome) return 'B'
+
+  const partes = nome
+    .trim()
+    .split(' ')
+    .filter(Boolean)
+
+  if (partes.length === 1) {
+    return partes[0]
+      .slice(0, 2)
+      .toUpperCase()
+  }
+
+  return (
+    partes[0][0] +
+    partes[partes.length - 1][0]
+  ).toUpperCase()
+}
 
 function App() {
-  return (
-    <div className="app">
-      <header className="topbar">
-        <div className="brand">
+  const [usuario, setUsuario] = useState(() => {
+    try {
+      const usuarioSalvo =
+        localStorage.getItem('borai_usuario')
+
+      return usuarioSalvo
+        ? JSON.parse(usuarioSalvo)
+        : null
+    } catch {
+      return null
+    }
+  })
+
+  // =========================
+  // LOGIN
+  // =========================
+
+  const [telaAuth, setTelaAuth] =
+    useState('login')
+
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+
+  const [erroLogin, setErroLogin] =
+    useState('')
+
+  const [sucessoLogin, setSucessoLogin] =
+    useState('')
+
+  const [
+    carregandoLogin,
+    setCarregandoLogin,
+  ] = useState(false)
+
+  // =========================
+  // CADASTRO
+  // =========================
+
+  const [
+    etapaCadastro,
+    setEtapaCadastro,
+  ] = useState(1)
+
+  const [nomeCadastro, setNomeCadastro] =
+    useState('')
+
+  const [emailCadastro, setEmailCadastro] =
+    useState('')
+
+  const [senhaCadastro, setSenhaCadastro] =
+    useState('')
+
+  const [
+    confirmarSenha,
+    setConfirmarSenha,
+  ] = useState('')
+
+  const [
+    preferenciasSelecionadas,
+    setPreferenciasSelecionadas,
+  ] = useState([])
+
+  const [
+    erroCadastro,
+    setErroCadastro,
+  ] = useState('')
+
+  const [
+    carregandoCadastro,
+    setCarregandoCadastro,
+  ] = useState(false)
+
+  // =========================
+  // HOME
+  // =========================
+
+  const [
+    estabelecimentos,
+    setEstabelecimentos,
+  ] = useState([])
+
+  const [
+    recomendacoesAdaptativas,
+    setRecomendacoesAdaptativas,
+  ] = useState([])
+
+  const [carregando, setCarregando] =
+    useState(false)
+
+  const [erro, setErro] = useState('')
+  const [busca, setBusca] = useState('')
+
+  const [
+    categoriaSelecionada,
+    setCategoriaSelecionada,
+  ] = useState('')
+
+  // =========================
+  // CARREGAR ESTABELECIMENTOS
+  // =========================
+
+  useEffect(() => {
+    if (!usuario) return
+
+    async function carregarEstabelecimentos() {
+      try {
+        setCarregando(true)
+        setErro('')
+
+        const dados =
+          await buscarEstabelecimentos({
+            categoria: categoriaSelecionada,
+            busca,
+          })
+
+        setEstabelecimentos(
+          dados.estabelecimentos || []
+        )
+      } catch (error) {
+        console.error(
+          'Erro ao carregar estabelecimentos:',
+          error
+        )
+
+        setErro(
+          'Não foi possível carregar os lugares agora.'
+        )
+      } finally {
+        setCarregando(false)
+      }
+    }
+
+    const temporizador = setTimeout(
+      carregarEstabelecimentos,
+      300
+    )
+
+    return () =>
+      clearTimeout(temporizador)
+  }, [
+    busca,
+    categoriaSelecionada,
+    usuario,
+  ])
+
+  // =========================
+  // CARREGAR RECOMENDAÇÕES
+  // =========================
+
+  useEffect(() => {
+    if (!usuario?.id) return
+
+    async function carregarRecomendacoes() {
+      try {
+        const dados =
+          await buscarRecomendacoes({
+            userId: usuario.id,
+
+            localizacao:
+              usuario.contextoAtual
+                ?.localizacao ||
+              'Manaus - AM',
+
+            categoria:
+              categoriaSelecionada ||
+              'lazer',
+
+            preferencias:
+              usuario.preferencias || [],
+          })
+
+        setRecomendacoesAdaptativas(
+          dados.recomendacoes || []
+        )
+      } catch (error) {
+        console.error(
+          'Erro ao carregar recomendações:',
+          error
+        )
+
+        setRecomendacoesAdaptativas([])
+      }
+    }
+
+    carregarRecomendacoes()
+  }, [
+    categoriaSelecionada,
+    usuario,
+  ])
+
+  // =========================
+  // FAZER LOGIN
+  // =========================
+
+  async function fazerLogin(event) {
+    event.preventDefault()
+
+    if (!email.trim() || !senha) {
+      setErroLogin(
+        'Informe seu e-mail e sua senha.'
+      )
+      return
+    }
+
+    try {
+      setCarregandoLogin(true)
+      setErroLogin('')
+      setSucessoLogin('')
+
+      const dados = await loginUsuario({
+        email: email.trim(),
+        senha,
+      })
+
+      localStorage.setItem(
+        'borai_usuario',
+        JSON.stringify(dados.usuario)
+      )
+
+      setUsuario(dados.usuario)
+
+      setEmail('')
+      setSenha('')
+    } catch (error) {
+      setErroLogin(
+        error.message ||
+          'Não foi possível entrar.'
+      )
+    } finally {
+      setCarregandoLogin(false)
+    }
+  }
+
+  // =========================
+  // ABRIR CADASTRO
+  // =========================
+
+  function abrirCadastro() {
+    setTelaAuth('cadastro')
+    setEtapaCadastro(1)
+    setErroCadastro('')
+    setErroLogin('')
+    setSucessoLogin('')
+  }
+
+  // =========================
+  // VOLTAR AO LOGIN
+  // =========================
+
+  function voltarLogin() {
+    setTelaAuth('login')
+    setEtapaCadastro(1)
+    setErroCadastro('')
+  }
+
+  // =========================
+  // CADASTRO - ETAPA 1
+  // =========================
+
+  function continuarCadastro(event) {
+    event.preventDefault()
+
+    setErroCadastro('')
+
+    if (!nomeCadastro.trim()) {
+      setErroCadastro(
+        'Informe seu nome.'
+      )
+      return
+    }
+
+    if (!emailCadastro.trim()) {
+      setErroCadastro(
+        'Informe seu e-mail.'
+      )
+      return
+    }
+
+    if (senhaCadastro.length < 6) {
+      setErroCadastro(
+        'A senha deve ter pelo menos 6 caracteres.'
+      )
+      return
+    }
+
+    if (
+      senhaCadastro !== confirmarSenha
+    ) {
+      setErroCadastro(
+        'As senhas não são iguais.'
+      )
+      return
+    }
+
+    setEtapaCadastro(2)
+  }
+
+  // =========================
+  // SELECIONAR PREFERÊNCIA
+  // =========================
+
+  function alternarPreferencia(valor) {
+    setPreferenciasSelecionadas(
+      (preferenciasAtuais) => {
+        if (
+          preferenciasAtuais.includes(valor)
+        ) {
+          return preferenciasAtuais.filter(
+            (preferencia) =>
+              preferencia !== valor
+          )
+        }
+
+        return [
+          ...preferenciasAtuais,
+          valor,
+        ]
+      }
+    )
+  }
+
+  // =========================
+  // CRIAR CONTA REAL
+  // =========================
+
+  async function criarConta() {
+    if (
+      preferenciasSelecionadas.length === 0
+    ) {
+      setErroCadastro(
+        'Escolha pelo menos uma preferência.'
+      )
+      return
+    }
+
+    try {
+      setCarregandoCadastro(true)
+      setErroCadastro('')
+
+      await cadastrarUsuario({
+        nome: nomeCadastro.trim(),
+        email: emailCadastro
+          .trim()
+          .toLowerCase(),
+        senha: senhaCadastro,
+
+        preferencias:
+          preferenciasSelecionadas,
+
+        localizacao: 'Manaus - AM',
+      })
+
+      const emailCriado =
+        emailCadastro.trim().toLowerCase()
+
+      setEmail(emailCriado)
+      setSenha('')
+
+      setNomeCadastro('')
+      setEmailCadastro('')
+      setSenhaCadastro('')
+      setConfirmarSenha('')
+      setPreferenciasSelecionadas([])
+
+      setEtapaCadastro(1)
+      setTelaAuth('login')
+
+      setSucessoLogin(
+        'Conta criada com sucesso! Agora entre com sua senha.'
+      )
+    } catch (error) {
+      setErroCadastro(
+        error.message ||
+          'Não foi possível criar sua conta.'
+      )
+    } finally {
+      setCarregandoCadastro(false)
+    }
+  }
+
+  // =========================
+  // SAIR
+  // =========================
+
+  function sair() {
+    localStorage.removeItem(
+      'borai_usuario'
+    )
+
+    setUsuario(null)
+
+    setRecomendacoesAdaptativas([])
+    setEstabelecimentos([])
+    setCategoriaSelecionada('')
+    setBusca('')
+
+    setTelaAuth('login')
+  }
+
+  // =========================
+  // CATEGORIAS
+  // =========================
+
+  function selecionarCategoria(valor) {
+    setCategoriaSelecionada(
+      (categoriaAtual) =>
+        categoriaAtual === valor
+          ? ''
+          : valor
+    )
+  }
+
+  const recomendacoes =
+    recomendacoesAdaptativas.length > 0
+      ? recomendacoesAdaptativas.slice(
+          0,
+          6
+        )
+      : estabelecimentos.slice(0, 6)
+
+  // =========================
+  // CADASTRO
+  // =========================
+
+  if (
+    !usuario &&
+    telaAuth === 'cadastro'
+  ) {
+    return (
+      <div className="login-page">
+        <div className="login-brand-area">
           <img
-            src={logoBorai}
-            className="brand-logo"
-            alt="Logo Boraí"
+            src={loginBorai}
+            alt="Boraí"
+            className="login-brand-image"
           />
         </div>
 
-        <nav className="nav" aria-label="Navegação principal">
-          <a href="#inicio">Início</a>
-          <a href="#explorar">Explorar</a>
-          <a href="#perfil">Perfil</a>
-        </nav>
-      </header>
+        <div className="login-form-area">
+          <div className="login-card">
+            {etapaCadastro === 1 && (
+              <>
+                <div className="login-heading">
+                  <span className="login-eyebrow">
+                    CRIAR CONTA
+                  </span>
 
-      <main>
-        <section className="hero-section" id="inicio">
-          <div className="hero-content">
-            <span className="eyebrow">
-              Descubra Manaus do seu jeito
-            </span>
+                  <h1>
+                    Vamos começar?
+                  </h1>
 
-            <h2>
-              Encontre lugares e experiências que combinam com você.
-            </h2>
-
-            <p>
-              O Boraí considera suas preferências, localização e contexto para
-              apresentar recomendações personalizadas.
-            </p>
-
-            <div className="search-box">
-              <input
-                type="text"
-                placeholder="O que você quer fazer hoje?"
-                aria-label="Buscar lugares, eventos ou experiências"
-              />
-
-              <button type="button">
-                Buscar
-              </button>
-            </div>
-          </div>
-
-          <aside className="context-panel">
-            <span className="context-label">
-              Seu contexto agora
-            </span>
-
-            <h3>Manaus • Agora</h3>
-
-            <div className="context-items">
-              <div>
-                <span>Localização</span>
-                <strong>Manaus - AM</strong>
-              </div>
-
-              <div>
-                <span>Preferência</span>
-                <strong>Cultura e gastronomia</strong>
-              </div>
-
-              <div>
-                <span>Categoria</span>
-                <strong>Explorar</strong>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="secondary-button"
-            >
-              Ajustar preferências
-            </button>
-          </aside>
-        </section>
-
-        <section className="section" id="explorar">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">
-                Explore por categoria
-              </span>
-
-              <h2>
-                O que combina com o seu momento?
-              </h2>
-            </div>
-          </div>
-
-          <div className="category-grid">
-            {categorias.map((categoria) => (
-              <button
-                className="category-card"
-                type="button"
-                key={categoria}
-              >
-                {categoria}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        <section className="section recommendations-section">
-          <div className="section-heading">
-            <div>
-              <span className="eyebrow">
-                Recomendado para você
-              </span>
-
-              <h2>
-                Algumas opções para começar
-              </h2>
-            </div>
-
-            <button
-              type="button"
-              className="link-button"
-            >
-              Ver todas
-            </button>
-          </div>
-
-          <div className="recommendation-grid">
-            {recomendacoes.map((recomendacao) => (
-              <article
-                className="recommendation-card"
-                key={recomendacao.nome}
-              >
-                <div className="card-tag">
-                  {recomendacao.categoria}
+                  <p>
+                    Crie seu perfil para o
+                    Boraí conhecer melhor
+                    você.
+                  </p>
                 </div>
 
-                <h3>{recomendacao.nome}</h3>
+                <form
+                  className="login-form"
+                  onSubmit={
+                    continuarCadastro
+                  }
+                >
+                  <label htmlFor="nomeCadastro">
+                    Nome
+                  </label>
 
-                <p className="location">
-                  {recomendacao.localizacao}
-                </p>
+                  <input
+                    id="nomeCadastro"
+                    type="text"
+                    placeholder="Seu nome"
+                    value={nomeCadastro}
+                    onChange={(event) =>
+                      setNomeCadastro(
+                        event.target.value
+                      )
+                    }
+                    autoComplete="name"
+                  />
 
-                <p>
-                  {recomendacao.motivo}
-                </p>
+                  <label htmlFor="emailCadastro">
+                    E-mail
+                  </label>
 
-                <div className="card-actions">
-                  <button type="button">
-                    Ver detalhes
+                  <input
+                    id="emailCadastro"
+                    type="email"
+                    placeholder="seuemail@exemplo.com"
+                    value={emailCadastro}
+                    onChange={(event) =>
+                      setEmailCadastro(
+                        event.target.value
+                      )
+                    }
+                    autoComplete="email"
+                  />
+
+                  <label htmlFor="senhaCadastro">
+                    Senha
+                  </label>
+
+                  <input
+                    id="senhaCadastro"
+                    type="password"
+                    placeholder="Mínimo 6 caracteres"
+                    value={senhaCadastro}
+                    onChange={(event) =>
+                      setSenhaCadastro(
+                        event.target.value
+                      )
+                    }
+                    autoComplete="new-password"
+                  />
+
+                  <label htmlFor="confirmarSenha">
+                    Confirmar senha
+                  </label>
+
+                  <input
+                    id="confirmarSenha"
+                    type="password"
+                    placeholder="Digite a senha novamente"
+                    value={confirmarSenha}
+                    onChange={(event) =>
+                      setConfirmarSenha(
+                        event.target.value
+                      )
+                    }
+                    autoComplete="new-password"
+                  />
+
+                  {erroCadastro && (
+                    <p className="login-error">
+                      {erroCadastro}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="login-submit"
+                  >
+                    Continuar
                   </button>
+                </form>
+
+                <div className="login-register">
+                  <span>
+                    Já tem uma conta?
+                  </span>
 
                   <button
                     type="button"
-                    className="ghost-button"
+                    onClick={voltarLogin}
                   >
-                    Salvar
+                    Entrar
                   </button>
                 </div>
-              </article>
-            ))}
+              </>
+            )}
+
+            {etapaCadastro === 2 && (
+              <>
+                <div className="login-heading">
+                  <span className="login-eyebrow">
+                    SEU JEITO
+                  </span>
+
+                  <h1>
+                    O que combina com você?
+                  </h1>
+
+                  <p>
+                    Escolha o que você mais
+                    gosta. O Boraí usará isso
+                    nas suas recomendações.
+                  </p>
+                </div>
+
+                <div className="cadastro-preferencias">
+                  {preferenciasCadastro.map(
+                    (preferencia) => {
+                      const selecionada =
+                        preferenciasSelecionadas.includes(
+                          preferencia.valor
+                        )
+
+                      return (
+                        <button
+                          key={
+                            preferencia.valor
+                          }
+                          type="button"
+                          className={`cadastro-preferencia ${
+                            selecionada
+                              ? 'selecionada'
+                              : ''
+                          }`}
+                          onClick={() =>
+                            alternarPreferencia(
+                              preferencia.valor
+                            )
+                          }
+                        >
+                          <span className="cadastro-preferencia-icone">
+                            {
+                              preferencia.icone
+                            }
+                          </span>
+
+                          <span>
+                            {
+                              preferencia.nome
+                            }
+                          </span>
+                        </button>
+                      )
+                    }
+                  )}
+                </div>
+
+                {erroCadastro && (
+                  <p className="login-error">
+                    {erroCadastro}
+                  </p>
+                )}
+
+                <button
+                  type="button"
+                  className="login-submit"
+                  onClick={criarConta}
+                  disabled={
+                    carregandoCadastro
+                  }
+                >
+                  {carregandoCadastro
+                    ? 'Criando conta...'
+                    : 'Criar minha conta'}
+                </button>
+
+                <button
+                  type="button"
+                  className="forgot-password"
+                  onClick={() => {
+                    setErroCadastro('')
+                    setEtapaCadastro(1)
+                  }}
+                >
+                  ← Voltar
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // =========================
+  // LOGIN
+  // =========================
+
+  if (!usuario) {
+    return (
+      <div className="login-page">
+        <div className="login-brand-area">
+          <img
+            src={loginBorai}
+            alt="Boraí"
+            className="login-brand-image"
+          />
+        </div>
+
+        <div className="login-form-area">
+          <div className="login-card">
+            <div className="login-heading">
+              <h1>
+                Bem-vindo ao Boraí
+              </h1>
+
+              <p>
+                Descubra lugares que
+                combinam com você.
+              </p>
+            </div>
+
+            {sucessoLogin && (
+              <p className="login-success">
+                {sucessoLogin}
+              </p>
+            )}
+
+            <form
+              className="login-form"
+              onSubmit={fazerLogin}
+            >
+              <label htmlFor="email">
+                E-mail
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                placeholder="seuemail@exemplo.com"
+                value={email}
+                onChange={(event) =>
+                  setEmail(
+                    event.target.value
+                  )
+                }
+                autoComplete="email"
+              />
+
+              <label htmlFor="senha">
+                Senha
+              </label>
+
+              <input
+                id="senha"
+                type="password"
+                placeholder="Digite sua senha"
+                value={senha}
+                onChange={(event) =>
+                  setSenha(
+                    event.target.value
+                  )
+                }
+                autoComplete="current-password"
+              />
+
+              {erroLogin && (
+                <p className="login-error">
+                  {erroLogin}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="login-submit"
+                disabled={
+                  carregandoLogin
+                }
+              >
+                {carregandoLogin
+                  ? 'Entrando...'
+                  : 'Entrar'}
+              </button>
+            </form>
+
+            <div className="login-register">
+              <span>
+                Ainda não tem uma conta?
+              </span>
+
+              <button
+                type="button"
+                onClick={abrirCadastro}
+              >
+                Criar conta
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // =========================
+  // HOME
+  // =========================
+
+  return (
+    <div className="app">
+      <header className="mobile-header">
+        <button
+          className="profile-button"
+          type="button"
+          aria-label="Perfil"
+          title={usuario.nome}
+        >
+          <span>
+            {obterIniciais(
+              usuario.nome
+            )}
+          </span>
+        </button>
+
+        <img
+          src={logoBorai}
+          className="brand-logo"
+          alt="Boraí"
+        />
+
+        <div className="header-actions">
+          <button
+            type="button"
+            aria-label="Buscar"
+          >
+            ⌕
+          </button>
+
+          <button
+            type="button"
+            aria-label="Sair"
+            title="Sair"
+            onClick={sair}
+          >
+            ↪
+          </button>
+        </div>
+      </header>
+
+      <main className="home">
+        {/* BUSCA */}
+
+        <section className="search-area">
+          <div className="search-box">
+            <span className="search-icon">
+              ⌕
+            </span>
+
+            <input
+              type="text"
+              placeholder="O que você está a fim hoje?"
+              aria-label="Buscar lugares e experiências"
+              value={busca}
+              onChange={(event) =>
+                setBusca(
+                  event.target.value
+                )
+              }
+            />
+
+            <button
+              type="button"
+              aria-label="Filtros"
+            >
+              ☷
+            </button>
           </div>
         </section>
+
+        {/* CATEGORIAS */}
+
+        <section className="categories-section">
+          <div className="categories-list">
+            {categorias.map(
+              (categoria) => (
+                <button
+                  type="button"
+                  className="category-item"
+                  key={
+                    categoria.valor
+                  }
+                  onClick={() =>
+                    selecionarCategoria(
+                      categoria.valor
+                    )
+                  }
+                  aria-pressed={
+                    categoriaSelecionada ===
+                    categoria.valor
+                  }
+                >
+                  <span className="category-icon">
+                    {
+                      categoria.icone
+                    }
+                  </span>
+
+                  <span>
+                    {categoria.nome}
+                  </span>
+                </button>
+              )
+            )}
+          </div>
+        </section>
+
+        {/* RECOMENDAÇÕES */}
+
+        <section className="personalized-section">
+          <div className="section-title-row">
+            <div>
+              <h2>
+                ✦ Feito para você
+              </h2>
+
+              <p>
+                {categoriaSelecionada ||
+                busca
+                  ? 'Resultados encontrados para você'
+                  : 'Baseado no seu gosto e momento atual'}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className="see-all-button"
+            >
+              Ver todos
+            </button>
+          </div>
+
+          {carregando && (
+            <p>
+              Carregando lugares...
+            </p>
+          )}
+
+          {erro && <p>{erro}</p>}
+
+          {!carregando &&
+            !erro &&
+            recomendacoes.length ===
+              0 && (
+              <p>
+                Nenhum lugar
+                encontrado.
+              </p>
+            )}
+
+          {!carregando &&
+            !erro &&
+            recomendacoes.length >
+              0 && (
+              <div className="recommendation-carousel">
+                {recomendacoes.map(
+                  (recomendacao) => (
+                    <article
+                      className="recommendation-card"
+                      key={
+                        recomendacao.id ||
+                        recomendacao._id
+                      }
+                    >
+                      <div className="recommendation-image-wrapper">
+                        <img
+                          src={
+                            recomendacao.imagem ||
+                            imagensPorCategoria[
+                              recomendacao
+                                .categoria
+                            ] ||
+                            imagensPorCategoria
+                              .lazer
+                          }
+                          alt={
+                            recomendacao.nome
+                          }
+                          className="recommendation-image"
+                        />
+
+                        <span className="route-badge">
+                          📍{' '}
+                          {recomendacao.zona ||
+                            'Manaus'}
+                        </span>
+
+                        <button
+                          type="button"
+                          className="favorite-button"
+                          aria-label={`Favoritar ${recomendacao.nome}`}
+                        >
+                          ♡
+                        </button>
+                      </div>
+
+                      <div className="recommendation-content">
+                        <span className="recommendation-category">
+                          {formatarCategoria(
+                            recomendacao.categoria
+                          )}
+                        </span>
+
+                        <h3>
+                          {
+                            recomendacao.nome
+                          }
+                        </h3>
+
+                        <p className="recommendation-location">
+                          📍{' '}
+                          {recomendacao.bairro
+                            ? `${recomendacao.bairro}, ${recomendacao.cidade}`
+                            : recomendacao.cidade}
+                        </p>
+
+                        <div className="recommendation-meta">
+                          <span>
+                            ★{' '}
+                            {recomendacao
+                              .quantidadeAvaliacoes >
+                            0
+                              ? recomendacao.avaliacao
+                              : 'Novo'}
+                          </span>
+
+                          <span>
+                            {recomendacao
+                              .faixaPreco &&
+                            recomendacao
+                              .faixaPreco !==
+                              'nao_informado'
+                              ? recomendacao.faixaPreco
+                              : 'Manaus'}
+                          </span>
+                        </div>
+
+                        <p className="recommendation-reason">
+                          {recomendacao.motivo ||
+                            recomendacao.descricao ||
+                            'Lugar selecionado pelo Boraí para você descobrir.'}
+                        </p>
+
+                        <button
+                          type="button"
+                          className="know-button"
+                        >
+                          Quero conhecer
+                        </button>
+                      </div>
+                    </article>
+                  )
+                )}
+              </div>
+            )}
+
+          <div
+            className="carousel-dots"
+            aria-hidden="true"
+          >
+            <span className="active"></span>
+            <span></span>
+            <span></span>
+          </div>
+        </section>
+
+        {/* MAPA */}
+
+        <section className="nearby-section">
+          <div className="section-title-row">
+            <div>
+              <h2>
+                📍 Perto de você
+              </h2>
+
+              <p>
+                Explore lugares no mapa
+              </p>
+            </div>
+
+            <button
+              type="button"
+              className="map-link"
+            >
+              Explorar mapa ›
+            </button>
+          </div>
+
+          <MapaBorai
+            estabelecimentos={
+              estabelecimentos
+            }
+          />
+        </section>
+
+        {/* SUGESTÃO */}
+
+        <section className="suggestion-section">
+          <button
+            type="button"
+            className="suggestion-button"
+          >
+            Sugestão
+            <strong>
+              personalizada
+            </strong>
+          </button>
+        </section>
       </main>
+
+      {/* NAVEGAÇÃO */}
+
+      <nav
+        className="bottom-navigation"
+        aria-label="Navegação principal"
+      >
+        <button
+          type="button"
+          className="active"
+        >
+          <span>⌂</span>
+          <small>Início</small>
+        </button>
+
+        <button type="button">
+          <span>◇</span>
+          <small>Explorar</small>
+        </button>
+
+        <button
+          type="button"
+          className="location-main-button"
+        >
+          <span>⌖</span>
+        </button>
+
+        <button type="button">
+          <span>♡</span>
+          <small>Favoritos</small>
+        </button>
+
+        <button type="button">
+          <span>✧</span>
+          <small>Chat</small>
+        </button>
+      </nav>
     </div>
   )
 }

@@ -4,29 +4,41 @@ const interactionSchema = new mongoose.Schema(
   {
     item: {
       type: String,
-      required: true
+      required: true,
     },
+
     categoria: {
       type: String,
-      required: true
+      required: true,
     },
+
     acao: {
       type: String,
-      enum: ['visualizou', 'salvou', 'aprovou', 'rejeitou', 'avaliou'],
-      required: true
+      enum: [
+        'visualizou',
+        'salvou',
+        'aprovou',
+        'rejeitou',
+        'avaliou',
+      ],
+      required: true,
     },
+
     avaliacao: {
       type: Number,
       min: 1,
       max: 5,
-      default: null
+      default: null,
     },
+
     data: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
-  { _id: false }
+  {
+    _id: false,
+  }
 )
 
 const userSchema = new mongoose.Schema(
@@ -34,36 +46,52 @@ const userSchema = new mongoose.Schema(
     nome: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+    },
+
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      unique: true,
+      sparse: true,
+    },
+
+    senha: {
+      type: String,
+      default: null,
+      select: false,
     },
 
     preferencias: {
       type: [String],
-      default: []
+      default: [],
     },
 
     contextoAtual: {
       localizacao: {
         type: String,
-        default: null
+        default: null,
       },
+
       categoria: {
         type: String,
-        default: null
+        default: null,
       },
+
       atualizadoEm: {
         type: Date,
-        default: Date.now
-      }
+        default: Date.now,
+      },
     },
 
     historico: {
       type: [interactionSchema],
-      default: []
-    }
+      default: [],
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 )
 

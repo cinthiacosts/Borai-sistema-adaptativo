@@ -5,6 +5,7 @@ require('dotenv').config()
 const conectarBanco = require('./config/database')
 const recommendationRoutes = require('./routes/recommendationRoutes')
 const userRoutes = require('./routes/userRoutes')
+const placeRoutes = require('./routes/placeRoutes')
 
 const app = express()
 
@@ -19,7 +20,7 @@ app.get('/', (req, res) => {
   res.json({
     projeto: 'Boraí',
     mensagem: 'API do Boraí funcionando!',
-    status: 'online'
+    status: 'online',
   })
 })
 
@@ -27,13 +28,14 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
-    servico: 'Boraí API'
+    servico: 'Boraí API',
   })
 })
 
 // Rotas da aplicação
 app.use('/api/recommendations', recommendationRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/places', placeRoutes)
 
 // Inicialização da aplicação
 async function iniciarServidor() {
@@ -44,4 +46,10 @@ async function iniciarServidor() {
   })
 }
 
-iniciarServidor()
+// Inicia normalmente quando executado pelo npm
+if (require.main === module) {
+  iniciarServidor()
+}
+
+// Permite que os testes utilizem a aplicação Express
+module.exports = app

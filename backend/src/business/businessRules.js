@@ -8,30 +8,26 @@
  */
 
 const CATEGORIAS_VALIDAS = [
-  "restaurante",
-  "bar",
-  "evento",
-  "cinema",
-  "teatro",
-  "museu",
-  "feira",
-  "passeio",
-  "shopping",
-  "hotel"
-];
+  'restaurante',
+  'cafeteria',
+  'bar',
+  'evento',
+  'hotel',
+  'lazer',
+]
 
 /**
  * Verifica se uma categoria faz parte das categorias
  * trabalhadas pelo Boraí.
  */
 function categoriaValida(categoria) {
-  if (typeof categoria !== "string") {
-    return false;
+  if (typeof categoria !== 'string') {
+    return false
   }
 
-  const categoriaNormalizada = categoria.trim().toLowerCase();
+  const categoriaNormalizada = categoria.trim().toLowerCase()
 
-  return CATEGORIAS_VALIDAS.includes(categoriaNormalizada);
+  return CATEGORIAS_VALIDAS.includes(categoriaNormalizada)
 }
 
 /**
@@ -41,21 +37,21 @@ function criarContexto({
   localizacao,
   horario,
   categoria,
-  filtros = {}
+  filtros = {},
 }) {
   return {
     localizacao: localizacao || null,
     horario: horario || new Date().toISOString(),
     categoria:
-      typeof categoria === "string"
+      typeof categoria === 'string'
         ? categoria.trim().toLowerCase()
         : null,
-    filtros
-  };
+    filtros,
+  }
 }
 
 module.exports = {
   CATEGORIAS_VALIDAS,
   categoriaValida,
-  criarContexto
-};
+  criarContexto,
+}
