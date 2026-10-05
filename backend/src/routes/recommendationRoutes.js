@@ -13,6 +13,47 @@ const {
 
 const router = express.Router()
 
+/**
+ * @swagger
+ * /api/recommendations:
+ *   post:
+ *     tags:
+ *       - Recomendações
+ *     summary: Gera recomendações adaptativas
+ *     description: Gera recomendações personalizadas utilizando categoria, preferências, contexto atual e histórico de interações do usuário.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 nullable: true
+ *                 example: 6ac30700224696d06a9b023b
+ *               localizacao:
+ *                 type: string
+ *                 example: Manaus - AM
+ *               categoria:
+ *                 type: string
+ *                 example: lazer
+ *               preferencias:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example:
+ *                   - gastronomia
+ *                   - cultura
+ *                   - natureza
+ *     responses:
+ *       200:
+ *         description: Recomendações geradas com sucesso
+ *       400:
+ *         description: Categoria inválida ou erro ao gerar recomendações
+ *       404:
+ *         description: Usuário não encontrado
+ */
 router.post('/', async (req, res) => {
   try {
     const {
