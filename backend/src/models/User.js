@@ -31,6 +31,8 @@ const interactionSchema = new mongoose.Schema(
       default: null,
     },
 
+    auditoria: {type: mongoose.Schema.Types.Mixed, default: null},
+
     data: {
       type: Date,
       default: Date.now,
@@ -63,6 +65,10 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
+    senhaVersao: {type:Number, default:0, select:false},
+    recuperacaoHash: {type:String, select:false},
+    recuperacaoExpira: {type:Date, select:false},
+
     preferencias: {
       type: [String],
       default: [],
@@ -84,6 +90,8 @@ const userSchema = new mongoose.Schema(
         default: Date.now,
       },
     },
+
+    descobertas: {type: mongoose.Schema.Types.Mixed, default: null},
 
     historico: {
       type: [interactionSchema],

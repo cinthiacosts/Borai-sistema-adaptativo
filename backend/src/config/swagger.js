@@ -18,6 +18,7 @@ const options = {
       },
     ],
 
+    components:{securitySchemes:{bearerAuth:{type:'http',scheme:'bearer'}}},
     tags: [
       {
         name: 'Sistema',
@@ -50,4 +51,11 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options)
 
+for (const [path,operations] of Object.entries(swaggerSpec.paths)) {
+ for (const [method,operation] of Object.entries(operations)) {
+  if (!['get','post','patch','delete','put'].includes(method)) continue
+  const publicRoute=['/','/api/health','/api/users/cadastro','/api/users/login','/api/users/recuperar-senha','/api/users/redefinir-senha'].includes(path) || (method==='get' && ['/api/places','/api/places/{id}'].includes(path))
+  if (!publicRoute) operation.security=[{bearerAuth:[]}]
+ }
+}
 module.exports = swaggerSpec

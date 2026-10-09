@@ -1,4 +1,5 @@
 const Place = require('../models/Place')
+const {trainModel} = require('./adaptiveModel')
 
 function normalizarTexto(valor) {
   return String(valor || '')
@@ -52,8 +53,19 @@ async function gerarRecomendacoes({
   }
 
   const lugares = await Place.find(filtro).lean()
+  // A decisão mais recente prevalece: rejeitar retira da lista até nova aprovação.
+  const ultimasDecisoes = new Map()
+  for (const interacao of historico) {
+    if (['aprovou', 'rejeitou'].includes(interacao.acao)) {
+      ultimasDecisoes.set(normalizarTexto(interacao.item), interacao.acao)
+    }
+  }
+  const lugaresDisponiveis = lugares.filter(lugar =>
+    ultimasDecisoes.get(normalizarTexto(lugar.nome)) !== 'rejeitou'
+  )
 
-  const resultados = lugares.map((lugar) => {
+  const modelo = trainModel(lugares,historico,preferencias)
+  const resultados = lugaresDisponiveis.map((lugar) => {
     const tagsNormalizadas = (lugar.tags || []).map(normalizarTexto)
 
     const interessesCompativeis = tagsNormalizadas.filter((tag) =>
@@ -88,6 +100,8 @@ async function gerarRecomendacoes({
       pontuacao -= 3
     }
 
+    const previsao = modelo.predict(lugar)
+    pontuacao += 4 * (previsao.indiceAfinidade - 0.5)
     const motivos = []
 
     if (interessesCompativeis.length > 0) {
@@ -116,7 +130,13 @@ async function gerarRecomendacoes({
       )
     }
 
+    if (modelo.samples > 0) {
+      const aprendidos = previsao.contributions.filter(x => x.peso > 0.05 && x.caracteristica.startsWith('interesse:')).sort((a,b) => b.peso-a.peso).slice(0,2).map(x => x.caracteristica.slice(10))
+      if (aprendidos.length) motivos.push('seu histórico indica afinidade com ' + aprendidos.join(', '))
+      else motivos.push('a ordenação também considera o modelo ajustado pelas suas escolhas')
+    }
     return {
+      ia: {modelo:modelo.version,amostras:modelo.samples,indiceAfinidade:previsao.indiceAfinidade,contribuicoes:previsao.contributions},
       id: lugar._id,
       nome: lugar.nome,
       categoria: lugar.categoria,

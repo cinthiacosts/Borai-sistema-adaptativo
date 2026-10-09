@@ -12,6 +12,7 @@ const {
 } = require('../controllers/placeController')
 
 const router = express.Router()
+const {autenticar,mesmaConta,bloquearAdministracao}=require('../middleware/access')
 
 /**
  * @swagger
@@ -59,7 +60,7 @@ router.get('/', listarPlaces)
  *       500:
  *         description: Erro interno do servidor
  */
-router.get('/pendentes', listarPlacesPendentes)
+router.get('/pendentes', autenticar, bloquearAdministracao)
 
 /**
  * @swagger
@@ -106,7 +107,7 @@ router.get('/pendentes', listarPlacesPendentes)
  *       500:
  *         description: Erro interno do servidor
  */
-router.post('/sugestoes', sugerirPlace)
+router.post('/sugestoes', autenticar, mesmaConta, (req,res,next)=>{req.body.userId=req.contaId;next()}, sugerirPlace)
 
 /**
  * @swagger
@@ -131,7 +132,7 @@ router.post('/sugestoes', sugerirPlace)
  *       500:
  *         description: Erro interno do servidor
  */
-router.patch('/:id/aprovar', aprovarPlace)
+router.patch('/:id/aprovar', autenticar, bloquearAdministracao)
 
 /**
  * @swagger
@@ -156,7 +157,7 @@ router.patch('/:id/aprovar', aprovarPlace)
  *       500:
  *         description: Erro interno do servidor
  */
-router.patch('/:id/rejeitar', rejeitarPlace)
+router.patch('/:id/rejeitar', autenticar, bloquearAdministracao)
 
 /**
  * @swagger
@@ -223,7 +224,7 @@ router.get('/:id', buscarPlacePorId)
  *       500:
  *         description: Erro interno do servidor
  */
-router.post('/', criarPlace)
+router.post('/', autenticar, bloquearAdministracao)
 
 /**
  * @swagger
@@ -255,6 +256,6 @@ router.post('/', criarPlace)
  *       500:
  *         description: Erro interno do servidor
  */
-router.patch('/:id', atualizarPlace)
+router.patch('/:id', autenticar, bloquearAdministracao)
 
 module.exports = router

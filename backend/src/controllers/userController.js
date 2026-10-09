@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs')
+const {criarSessao} = require('../services/sessionService')
 const User = require('../models/User')
+const AuditLog = require('../models/AuditLog')
+const mongoose = require('mongoose')
 
 const ACOES_VALIDAS = [
   'visualizou',
@@ -129,7 +132,7 @@ async function loginUsuario(req, res) {
   try {
     const { email, senha } = req.body
 
-    if (!email || !senha) {
+    if (typeof email !== 'string' || typeof senha !== 'string' || !email || !senha) {
       return res.status(400).json({
         erro: 'Dados incompletos.',
         mensagem: 'Informe e-mail e senha.',
@@ -140,7 +143,7 @@ async function loginUsuario(req, res) {
 
     const usuario = await User.findOne({
       email: emailNormalizado,
-    }).select('+senha')
+    }).select('+senha +senhaVersao')
 
     if (!usuario || !usuario.senha) {
       return res.status(401).json({
@@ -163,6 +166,7 @@ async function loginUsuario(req, res) {
 
     return res.status(200).json({
       mensagem: 'Login realizado com sucesso.',
+      sessao: await criarSessao(usuario._id,usuario.senhaVersao || 0),
       usuario: {
         id: usuario._id,
         nome: usuario.nome,
@@ -252,6 +256,8 @@ async function registrarInteracao(req, res) {
       categoria,
       acao,
       avaliacao = null,
+      recomendacaoId = null,
+      lugarId = null,
     } = req.body
 
     if (!item || !categoria || !acao) {
@@ -290,12 +296,27 @@ async function registrarInteracao(req, res) {
       })
     }
 
+    let snapshot = null
+    if (recomendacaoId) {
+      if (!['aprovou','rejeitou'].includes(acao) || !mongoose.isValidObjectId(recomendacaoId)) {
+        return res.status(400).json({mensagem:'Referência de recomendação inválida.'})
+      }
+      const registro = await AuditLog.findOne({_id:recomendacaoId,usuarioId:usuario._id,entidade:'recomendacao'})
+      const indicacao = registro?.dados?.recomendacoes?.find(r => String(r.id) === String(lugarId))
+      if (!indicacao) return res.status(400).json({mensagem:'Esta indicação não pertence ao histórico da conta.'})
+      snapshot = {recomendacaoId:String(registro._id),lugarId:String(indicacao.id),
+        motivo:indicacao.motivo,pontuacao:indicacao.pontuacao,ia:indicacao.ia,
+        contexto:registro.dados.contexto,nome:indicacao.nome,categoria:indicacao.categoria,
+        autonomia:'supervisionada',resultado:acao==='aprovou'?'interesse registrado':'indicação recusada'}
+    }
+    // Decisão e seu snapshot ficam no mesmo documento, salvos juntos no MongoDB.
     usuario.historico.push({
-      item: item.trim(),
-      categoria: categoria.trim().toLowerCase(),
+      item: snapshot ? snapshot.nome : item.trim(),
+      categoria: snapshot ? snapshot.categoria : categoria.trim().toLowerCase(),
       acao,
       avaliacao,
       data: new Date(),
+      auditoria:snapshot,
     })
 
     await usuario.save()

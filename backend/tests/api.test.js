@@ -1,6 +1,10 @@
 const { describe, test, before, after } = require('node:test')
 const assert = require('node:assert/strict')
-const request = require('supertest')
+const rawRequest = require('supertest')
+let testToken
+const request=app=>rawRequest.agent(app).set('Authorization','Bearer '+testToken)
+const Session=require('../src/models/Session')
+const {criarSessao,hashToken}=require('../src/services/sessionService')
 const mongoose = require('mongoose')
 
 const app = require('../src/server')
@@ -12,9 +16,11 @@ const USUARIO_TESTE_ID = '6ac281de00a2288e66e5d48c'
 describe('Boraí API', () => {
   before(async () => {
     await conectarBanco()
+    testToken=(await criarSessao(USUARIO_TESTE_ID)).token
   })
 
   after(async () => {
+    await Session.deleteOne({tokenHash:hashToken(testToken)})
     await mongoose.connection.close()
   })
 

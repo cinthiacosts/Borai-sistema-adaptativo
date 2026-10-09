@@ -1,6 +1,7 @@
 const express = require('express')
 
 const User = require('../models/User')
+const AuditLog = require('../models/AuditLog')
 
 const {
   categoriaValida,
@@ -54,17 +55,17 @@ const router = express.Router()
  *       404:
  *         description: Usuário não encontrado
  */
-router.post('/', async (req, res) => {
+router.post('/', require('../middleware/access').autenticar, require('../middleware/access').mesmaConta, async (req, res) => {
   try {
     const {
-      userId = null,
+      userId = req.contaId,
       localizacao = 'Manaus - AM',
-      categoria = 'lazer',
+      categoria = null,
       preferencias = [],
-    } = req.body
+    } = {...req.body,userId:req.contaId}
 
     // Valida a categoria informada
-    if (!categoriaValida(categoria)) {
+    if (categoria !== null && !categoriaValida(categoria)) {
       return res.status(400).json({
         erro: 'Categoria inválida.',
         mensagem: 'Escolha uma categoria disponível no Boraí.',
@@ -110,7 +111,15 @@ router.post('/', async (req, res) => {
       historico: historicoUsuario,
     })
 
+    // O snapshot é salvo antes de entregar as indicações para a interface.
+    const registro = usuario ? await AuditLog.create({
+      acao:'recomendacoes_geradas', entidade:'recomendacao', usuarioId:usuario._id,
+      descricao:'Indicações geradas com contexto e justificativas.',
+      dados:{contexto,memoriaUtilizada:historicoUsuario.length,modelo:'borai-logistic-v1',
+        recomendacoes:recomendacoes.map((r,posicao) => ({id:String(r.id),nome:r.nome,categoria:r.categoria,motivo:r.motivo,pontuacao:r.pontuacao,ia:r.ia,posicao:posicao+1}))}
+    }) : null
     return res.status(200).json({
+      auditoriaId:registro ? String(registro._id) : null,
       usuario: usuario
         ? {
             id: usuario._id,

@@ -1,9 +1,12 @@
+import PasswordRecovery from './components/PasswordRecovery'
+import HomeBorai from './components/HomeBorai'
 import { useEffect, useState } from 'react'
 
 import './App.css'
 
 import logoBorai from './assets/logo-borai-valida.png'
-import loginBorai from './assets/login-borai.png'
+import logoEntrada from './assets/logo-borai-cadastro.png'
+import './styles/AuthBorai.css'
 
 import {
   buscarEstabelecimentos,
@@ -106,6 +109,16 @@ function obterIniciais(nome) {
 }
 
 function App() {
+  const [recoveryToken,setRecoveryToken]=useState(() => {
+    const token=new URLSearchParams(window.location.hash.slice(1)).get('redefinir-senha')
+    return token || null
+  })
+  function voltarDaRecuperacao() {
+    const terminouRedefinicao=Boolean(recoveryToken)
+    setRecoveryToken(null);setTelaAuth('login')
+    window.history.replaceState(null,'',window.location.pathname+window.location.search)
+    if(terminouRedefinicao) window.location.reload()
+  }
   const [usuario, setUsuario] = useState(() => {
     try {
       const usuarioSalvo =
@@ -128,6 +141,7 @@ function App() {
 
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [mostrarSenha, setMostrarSenha] = useState(false)
 
   const [erroLogin, setErroLogin] =
     useState('')
@@ -530,6 +544,8 @@ function App() {
   // CADASTRO
   // =========================
 
+  if (recoveryToken || (!usuario && telaAuth === 'recuperar')) return <PasswordRecovery token={recoveryToken} onBack={voltarDaRecuperacao}/>
+
   if (
     !usuario &&
     telaAuth === 'cadastro'
@@ -538,14 +554,26 @@ function App() {
       <div className="login-page">
         <div className="login-brand-area">
           <img
-            src={loginBorai}
+            src={logoEntrada}
             alt="Boraí"
             className="login-brand-image"
           />
+          <div className="auth-brand-copy">
+            <span className="auth-kicker">DESCUBRA MANAUS</span>
+            <h2>Seu jeito de curtir,<br />onde você estiver.</h2>
+            <p>Entre a cidade e a natureza, descubra experiências que combinam com você.</p>
+            <span className="auth-city">Manaus · Amazonas</span>
+          </div>
         </div>
 
-        <div className="login-form-area">
+        <main className="login-form-area" aria-label="Acesso ao Boraí">
           <div className="login-card">
+            <img src={logoBorai} alt="Boraí" className="auth-form-logo" />
+            <div className="auth-tabs" aria-label="Acesso">
+              <button type="button" className={telaAuth === 'login' ? 'is-active' : ''} aria-pressed={telaAuth === 'login'} onClick={voltarLogin} disabled={carregandoLogin || carregandoCadastro}>Entrar</button>
+              <button type="button" className={telaAuth === 'cadastro' ? 'is-active' : ''} aria-pressed={telaAuth === 'cadastro'} onClick={abrirCadastro} disabled={carregandoLogin || carregandoCadastro}>Criar conta</button>
+            </div>
+            <p className="auth-step">Etapa {etapaCadastro} de 2 · {etapaCadastro === 1 ? 'Seus dados' : 'Seus interesses'}</p>
             {etapaCadastro === 1 && (
               <>
                 <div className="login-heading">
@@ -585,6 +613,8 @@ function App() {
                       )
                     }
                     autoComplete="name"
+                    required
+                    maxLength={100}
                   />
 
                   <label htmlFor="emailCadastro">
@@ -602,6 +632,7 @@ function App() {
                       )
                     }
                     autoComplete="email"
+                    required
                   />
 
                   <label htmlFor="senhaCadastro">
@@ -619,6 +650,8 @@ function App() {
                       )
                     }
                     autoComplete="new-password"
+                    required
+                    minLength={6}
                   />
 
                   <label htmlFor="confirmarSenha">
@@ -636,10 +669,12 @@ function App() {
                       )
                     }
                     autoComplete="new-password"
+                    required
+                    minLength={6}
                   />
 
                   {erroCadastro && (
-                    <p className="login-error">
+                    <p className="login-error" role="alert">
                       {erroCadastro}
                     </p>
                   )}
@@ -704,6 +739,8 @@ function App() {
                               ? 'selecionada'
                               : ''
                           }`}
+                          aria-pressed={selecionada}
+                          disabled={carregandoCadastro}
                           onClick={() =>
                             alternarPreferencia(
                               preferencia.valor
@@ -728,7 +765,7 @@ function App() {
                 </div>
 
                 {erroCadastro && (
-                  <p className="login-error">
+                  <p className="login-error" role="alert">
                     {erroCadastro}
                   </p>
                 )}
@@ -753,13 +790,14 @@ function App() {
                     setErroCadastro('')
                     setEtapaCadastro(1)
                   }}
+                  disabled={carregandoCadastro}
                 >
                   ← Voltar
                 </button>
               </>
             )}
           </div>
-        </div>
+        </main>
       </div>
     )
   }
@@ -773,14 +811,25 @@ function App() {
       <div className="login-page">
         <div className="login-brand-area">
           <img
-            src={loginBorai}
+            src={logoEntrada}
             alt="Boraí"
             className="login-brand-image"
           />
+          <div className="auth-brand-copy">
+            <span className="auth-kicker">DESCUBRA MANAUS</span>
+            <h2>Seu jeito de curtir,<br />onde você estiver.</h2>
+            <p>Entre a cidade e a natureza, descubra experiências que combinam com você.</p>
+            <span className="auth-city">Manaus · Amazonas</span>
+          </div>
         </div>
 
-        <div className="login-form-area">
+        <main className="login-form-area" aria-label="Acesso ao Boraí">
           <div className="login-card">
+            <img src={logoBorai} alt="Boraí" className="auth-form-logo" />
+            <div className="auth-tabs" aria-label="Acesso">
+              <button type="button" className={telaAuth === 'login' ? 'is-active' : ''} aria-pressed={telaAuth === 'login'} onClick={voltarLogin} disabled={carregandoLogin || carregandoCadastro}>Entrar</button>
+              <button type="button" className={telaAuth === 'cadastro' ? 'is-active' : ''} aria-pressed={telaAuth === 'cadastro'} onClick={abrirCadastro} disabled={carregandoLogin || carregandoCadastro}>Criar conta</button>
+            </div>
             <div className="login-heading">
               <h1>
                 Bem-vindo ao Boraí
@@ -793,7 +842,7 @@ function App() {
             </div>
 
             {sucessoLogin && (
-              <p className="login-success">
+              <p className="login-success" role="status">
                 {sucessoLogin}
               </p>
             )}
@@ -817,6 +866,7 @@ function App() {
                   )
                 }
                 autoComplete="email"
+                    required
               />
 
               <label htmlFor="senha">
@@ -825,7 +875,7 @@ function App() {
 
               <input
                 id="senha"
-                type="password"
+                type={mostrarSenha ? 'text' : 'password'}
                 placeholder="Digite sua senha"
                 value={senha}
                 onChange={(event) =>
@@ -834,10 +884,15 @@ function App() {
                   )
                 }
                 autoComplete="current-password"
+                required
               />
 
+              <button type="button" className="auth-show-password" aria-pressed={mostrarSenha} onClick={() => setMostrarSenha(!mostrarSenha)}>
+                {mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
+              </button>
+
               {erroLogin && (
-                <p className="login-error">
+                <p className="login-error" role="alert">
                   {erroLogin}
                 </p>
               )}
@@ -853,6 +908,7 @@ function App() {
                   ? 'Entrando...'
                   : 'Entrar'}
               </button>
+              <button type="button" className="auth-show-password" onClick={() => setTelaAuth('recuperar')} disabled={carregandoLogin}>Esqueci minha senha</button>
             </form>
 
             <div className="login-register">
@@ -868,363 +924,23 @@ function App() {
               </button>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     )
   }
 
-  // =========================
+      // =========================
   // HOME
   // =========================
-
   return (
-    <div className="app">
-      <header className="mobile-header">
-        <button
-          className="profile-button"
-          type="button"
-          aria-label="Perfil"
-          title={usuario.nome}
-        >
-          <span>
-            {obterIniciais(
-              usuario.nome
-            )}
-          </span>
-        </button>
-
-        <img
-          src={logoBorai}
-          className="brand-logo"
-          alt="Boraí"
-        />
-
-        <div className="header-actions">
-          <button
-            type="button"
-            aria-label="Buscar"
-          >
-            ⌕
-          </button>
-
-          <button
-            type="button"
-            aria-label="Sair"
-            title="Sair"
-            onClick={sair}
-          >
-            ↪
-          </button>
-        </div>
-      </header>
-
-      <main className="home">
-        {/* BUSCA */}
-
-        <section className="search-area">
-          <div className="search-box">
-            <span className="search-icon">
-              ⌕
-            </span>
-
-            <input
-              type="text"
-              placeholder="O que você está a fim hoje?"
-              aria-label="Buscar lugares e experiências"
-              value={busca}
-              onChange={(event) =>
-                setBusca(
-                  event.target.value
-                )
-              }
-            />
-
-            <button
-              type="button"
-              aria-label="Filtros"
-            >
-              ☷
-            </button>
-          </div>
-        </section>
-
-        {/* CATEGORIAS */}
-
-        <section className="categories-section">
-          <div className="categories-list">
-            {categorias.map(
-              (categoria) => (
-                <button
-                  type="button"
-                  className="category-item"
-                  key={
-                    categoria.valor
-                  }
-                  onClick={() =>
-                    selecionarCategoria(
-                      categoria.valor
-                    )
-                  }
-                  aria-pressed={
-                    categoriaSelecionada ===
-                    categoria.valor
-                  }
-                >
-                  <span className="category-icon">
-                    {
-                      categoria.icone
-                    }
-                  </span>
-
-                  <span>
-                    {categoria.nome}
-                  </span>
-                </button>
-              )
-            )}
-          </div>
-        </section>
-
-        {/* RECOMENDAÇÕES */}
-
-        <section className="personalized-section">
-          <div className="section-title-row">
-            <div>
-              <h2>
-                ✦ Feito para você
-              </h2>
-
-              <p>
-                {categoriaSelecionada ||
-                busca
-                  ? 'Resultados encontrados para você'
-                  : 'Baseado no seu gosto e momento atual'}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="see-all-button"
-            >
-              Ver todos
-            </button>
-          </div>
-
-          {carregando && (
-            <p>
-              Carregando lugares...
-            </p>
-          )}
-
-          {erro && <p>{erro}</p>}
-
-          {!carregando &&
-            !erro &&
-            recomendacoes.length ===
-              0 && (
-              <p>
-                Nenhum lugar
-                encontrado.
-              </p>
-            )}
-
-          {!carregando &&
-            !erro &&
-            recomendacoes.length >
-              0 && (
-              <div className="recommendation-carousel">
-                {recomendacoes.map(
-                  (recomendacao) => (
-                    <article
-                      className="recommendation-card"
-                      key={
-                        recomendacao.id ||
-                        recomendacao._id
-                      }
-                    >
-                      <div className="recommendation-image-wrapper">
-                        <img
-                          src={
-                            recomendacao.imagem ||
-                            imagensPorCategoria[
-                              recomendacao
-                                .categoria
-                            ] ||
-                            imagensPorCategoria
-                              .lazer
-                          }
-                          alt={
-                            recomendacao.nome
-                          }
-                          className="recommendation-image"
-                        />
-
-                        <span className="route-badge">
-                          📍{' '}
-                          {recomendacao.zona ||
-                            'Manaus'}
-                        </span>
-
-                        <button
-                          type="button"
-                          className="favorite-button"
-                          aria-label={`Favoritar ${recomendacao.nome}`}
-                        >
-                          ♡
-                        </button>
-                      </div>
-
-                      <div className="recommendation-content">
-                        <span className="recommendation-category">
-                          {formatarCategoria(
-                            recomendacao.categoria
-                          )}
-                        </span>
-
-                        <h3>
-                          {
-                            recomendacao.nome
-                          }
-                        </h3>
-
-                        <p className="recommendation-location">
-                          📍{' '}
-                          {recomendacao.bairro
-                            ? `${recomendacao.bairro}, ${recomendacao.cidade}`
-                            : recomendacao.cidade}
-                        </p>
-
-                        <div className="recommendation-meta">
-                          <span>
-                            ★{' '}
-                            {recomendacao
-                              .quantidadeAvaliacoes >
-                            0
-                              ? recomendacao.avaliacao
-                              : 'Novo'}
-                          </span>
-
-                          <span>
-                            {recomendacao
-                              .faixaPreco &&
-                            recomendacao
-                              .faixaPreco !==
-                              'nao_informado'
-                              ? recomendacao.faixaPreco
-                              : 'Manaus'}
-                          </span>
-                        </div>
-
-                        <p className="recommendation-reason">
-                          {recomendacao.motivo ||
-                            recomendacao.descricao ||
-                            'Lugar selecionado pelo Boraí para você descobrir.'}
-                        </p>
-
-                        <button
-                          type="button"
-                          className="know-button"
-                        >
-                          Quero conhecer
-                        </button>
-                      </div>
-                    </article>
-                  )
-                )}
-              </div>
-            )}
-
-          <div
-            className="carousel-dots"
-            aria-hidden="true"
-          >
-            <span className="active"></span>
-            <span></span>
-            <span></span>
-          </div>
-        </section>
-
-        {/* MAPA */}
-
-        <section className="nearby-section">
-          <div className="section-title-row">
-            <div>
-              <h2>
-                📍 Perto de você
-              </h2>
-
-              <p>
-                Explore lugares no mapa
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="map-link"
-            >
-              Explorar mapa ›
-            </button>
-          </div>
-
-          <MapaBorai
-            estabelecimentos={
-              estabelecimentos
-            }
-          />
-        </section>
-
-        {/* SUGESTÃO */}
-
-        <section className="suggestion-section">
-          <button
-            type="button"
-            className="suggestion-button"
-          >
-            Sugestão
-            <strong>
-              personalizada
-            </strong>
-          </button>
-        </section>
-      </main>
-
-      {/* NAVEGAÇÃO */}
-
-      <nav
-        className="bottom-navigation"
-        aria-label="Navegação principal"
-      >
-        <button
-          type="button"
-          className="active"
-        >
-          <span>⌂</span>
-          <small>Início</small>
-        </button>
-
-        <button type="button">
-          <span>◇</span>
-          <small>Explorar</small>
-        </button>
-
-        <button
-          type="button"
-          className="location-main-button"
-        >
-          <span>⌖</span>
-        </button>
-
-        <button type="button">
-          <span>♡</span>
-          <small>Favoritos</small>
-        </button>
-
-        <button type="button">
-          <span>✧</span>
-          <small>Chat</small>
-        </button>
-      </nav>
-    </div>
+    <HomeBorai
+      usuario={usuario}
+      estabelecimentos={estabelecimentos}
+      carregando={carregando}
+      erro={erro}
+      onSair={sair}
+      onUsuarioChange={setUsuario}
+    />
   )
 }
 

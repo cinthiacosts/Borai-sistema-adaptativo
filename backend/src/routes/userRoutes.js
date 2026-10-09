@@ -10,6 +10,30 @@ const {
 } = require('../controllers/userController')
 
 const router = express.Router()
+const recovery = require('../controllers/recoveryController')
+const recoveryLimit = require('../middleware/recoveryLimit')
+router.post('/recuperar-senha',recoveryLimit,recovery.solicitar)
+router.post('/redefinir-senha',recoveryLimit,recovery.redefinir)
+const {autenticar,mesmaConta,bloquearAdministracao,encerrarSessao}=require('../middleware/access')
+router.post('/logout',autenticar,encerrarSessao)
+/**
+ * @swagger
+ * /api/users/{id}/discoveries:
+ *   patch:
+ *     tags: [Usuários]
+ *     summary: Salva favoritos, visitas, avaliações pessoais e foto da própria conta
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: {type: string}
+ *     responses:
+ *       200: {description: Perfil salvo}
+ *       401: {description: Sessão necessária}
+ *       403: {description: Outra conta não permitida}
+ *       409: {description: Perfil alterado em outro dispositivo}
+ */
+router.patch('/:id/discoveries',autenticar,mesmaConta,require('../controllers/discoveryController').salvarDescobertas)
 
 /**
  * @swagger
@@ -43,7 +67,7 @@ const router = express.Router()
  *       400:
  *         description: Dados inválidos
  */
-router.post('/', criarUsuario)
+router.post('/', bloquearAdministracao)
 
 /**
  * @swagger
@@ -149,7 +173,7 @@ router.post('/login', loginUsuario)
  *       404:
  *         description: Usuário não encontrado
  */
-router.get('/:id', buscarUsuario)
+router.get('/:id', autenticar, mesmaConta, buscarUsuario)
 
 /**
  * @swagger
@@ -196,7 +220,7 @@ router.get('/:id', buscarUsuario)
  *       404:
  *         description: Usuário não encontrado
  */
-router.patch('/:id', atualizarUsuario)
+router.patch('/:id', autenticar, mesmaConta, atualizarUsuario)
 
 /**
  * @swagger
@@ -226,6 +250,12 @@ router.patch('/:id', atualizarUsuario)
  *               acao:
  *                 type: string
  *                 example: aprovou
+ *               recomendacaoId:
+ *                 type: string
+ *                 description: Referência do snapshot para aprovação ou rejeição.
+ *               lugarId:
+ *                 type: string
+ *                 description: ID do lugar no snapshot da recomendação.
  *               avaliacao:
  *                 type: integer
  *                 minimum: 1
@@ -239,6 +269,6 @@ router.patch('/:id', atualizarUsuario)
  *       404:
  *         description: Usuário não encontrado
  */
-router.post('/:id/interactions', registrarInteracao)
+router.post('/:id/interactions', autenticar, mesmaConta, registrarInteracao)
 
 module.exports = router

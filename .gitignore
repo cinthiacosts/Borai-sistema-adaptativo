@@ -22,4 +22,14 @@ Thumbs.db
 
 # Build do frontend
 frontend/dist/
+dist/backend/.env
+
+.env
+.env.*
+*.env
+node_modules/
 dist/
+backup-*/
+**/backup-*/
+*.backup
+*.bak

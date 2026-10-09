@@ -1,0 +1,10 @@
+.borai-inside .bh-audit-list {display:grid;gap:16px;margin-top:24px;}
+.borai-inside .bh-audit-list article {background:white;border:1px solid #dce7df;border-radius:16px;padding:22px;}
+.borai-inside .bh-audit-list article>div {display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.borai-inside .bh-audit-list time {font-size:13px;color:#65766c;}
+.borai-inside .bh-audit-list h2 {font-size:20px;margin:14px 0;}
+.borai-inside .bh-audit-list summary {cursor:pointer;font-weight:600;color:#005b43;}
+.borai-inside .bh-audit-list details {line-height:1.6;}
+.borai-inside .bh-audit-list li {margin:15px 0;}
+.borai-inside .bh-audit-list li p {margin:5px 0;}
+.borai-inside .audit-reference {overflow-wrap:anywhere;font-size:12px;color:#65766c;}

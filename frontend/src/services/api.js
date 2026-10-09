@@ -1,14 +1,17 @@
-const API_URL = 'http://localhost:3000/api'
+import {authHeaders,saveSession,expireSession} from './session'
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/$/, '')
 
 async function fazerRequisicao(endpoint, options = {}) {
   const response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders(),
       ...options.headers,
     },
-    ...options,
   })
 
+  if (response.status === 401 && endpoint !== '/users/login') expireSession()
   if (!response.ok) {
     let mensagem = `Erro na API: ${response.status}`
 
@@ -51,17 +54,16 @@ export async function cadastrarUsuario({
   })
 }
 
-export async function loginUsuario({
-  email,
-  senha,
-}) {
-  return fazerRequisicao('/users/login', {
+export async function loginUsuario({ email, senha }) {
+  const dados = await fazerRequisicao('/users/login', {
     method: 'POST',
     body: JSON.stringify({
       email,
       senha,
     }),
   })
+  saveSession(dados.sessao)
+  return dados
 }
 
 // =========================
