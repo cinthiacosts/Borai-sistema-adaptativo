@@ -1,4 +1,4 @@
-import {photos, testPlaceName} from './placePhotos'
+import {photos, localPhotosByName, testPlaceName} from './placePhotos'
 // Catálogo e textos da versão do site Boraí. Nenhum horário ou preço é inferido.
 export const source = 'https://www.manaus.am.gov.br/turismo/o-que-ver-e-fazer-em-manaus/'
 export const categories = ['Cultura', 'Natureza', 'Passeios', 'Gastronomia', 'Cafeterias', 'Bares', 'Eventos', 'Hotéis']
@@ -39,7 +39,7 @@ export function mergePlaces(database = []) {
       category, apiCategory:p.categoria || 'lazer', area:p.bairro || known?.area || 'Manaus', zone:p.zona || '',
       tag:known?.tag || p.bairro || 'Uma descoberta em Manaus', description:p.descricao || known?.description || 'Conheça este lugar e planeje sua visita.',
       icon:known?.icon || icons[p.categoria] || 'sun', tags, official:known ? source : safeUrl(p.site),
-      photo:known && photos[known.id] ? photos[known.id] : safeUrl(p.imagem) ? {url:safeUrl(p.imagem),author:p.creditoImagem || '',page:safeUrl(p.fonteImagem),label:'',license:null} : null,
+      photo:(known && photos[known.id]) || localPhotosByName[normalize(p.nome)] || (safeUrl(p.imagem) ? {url:safeUrl(p.imagem),author:p.creditoImagem || '',page:safeUrl(p.fonteImagem),label:'',license:null} : null),
       coords:p.localizacao, address:p.endereco || '', database:true,
     }
     const index = result.findIndex(x => x.id === local.id || normalize(x.name) === normalize(local.name))

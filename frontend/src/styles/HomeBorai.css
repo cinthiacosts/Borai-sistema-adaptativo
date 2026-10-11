@@ -71,3 +71,274 @@
 .borai-inside .bh-decisions button {padding:9px 12px; font-size:12px; width:auto; margin:0;}
 .borai-inside .bh-context {align-items:center;flex-wrap:wrap;}
 .borai-inside .bh-context p {margin:6px 0;}
+/* Ajustes de responsividade compartilhados por todas as páginas internas. */
+:root:has(.borai-inside) { color-scheme:light; background:#faf7ec; }
+#root:has(.borai-inside) { width:100%; max-width:none; border:0; text-align:left; }
+.borai-inside { background:#faf7ec; }
+.borai-inside .app-shell { grid-template-columns:250px minmax(0,1fr); }
+.borai-inside .side { padding:24px 20px; overflow-y:auto; }
+.borai-inside .city { margin:16px 0 22px; }
+.borai-inside .side nav { gap:5px; }
+.borai-inside .side nav button { min-height:48px; }
+.borai-inside .bh-today { margin:24px 0; padding:18px; background:#edf4df; border:1px solid #d0dfb9; border-radius:18px; }
+.borai-inside .bh-today h2 { font-size:23px; margin:8px 0 14px; }
+.borai-inside .bh-today .eyebrow { font-size:10px; letter-spacing:1px; }
+.borai-inside .bh-today p { font-size:14px; margin:0 0 8px; }
+.borai-inside .bh-today .bh-temperature { font-size:32px; font-weight:700; color:#00503b; }
+.borai-inside .bh-today small { display:block; font-size:11px; line-height:1.5; color:#49634a; }
+.borai-inside .bh-today .bh-weather-tip { margin:14px 0; }
+.borai-inside .bh-today .primary { width:100%; padding:11px; }
+.borai-inside .bh-today a { display:block; margin:12px 0 4px; font-size:11px; color:#345d39; text-decoration:underline; }
+.borai-inside .bh-weather-retry { background:none; border:0; color:#00503b; text-decoration:underline; min-height:44px; }
+.borai-inside .account { margin-top:auto; }
+.borai-inside .hero { grid-template-columns:minmax(0,1fr) minmax(0,.8fr); }
+.borai-inside button,.borai-inside .primary,.borai-inside .secondary,.borai-inside summary { min-height:44px; }
+.borai-inside .heart,.borai-inside .bh-close { width:44px; height:44px; }
+.borai-inside .place-card { display:flex; flex-direction:column; }
+.borai-inside .card-body { flex:1; display:flex; flex-direction:column; }
+.borai-inside .detail { margin-top:auto; }
+.borai-inside .region-control { min-width:0; }
+.borai-inside .region-control span { min-width:0; width:100%; }
+.borai-inside .region-control select { width:100%; max-width:220px; min-width:0; }
+.borai-inside .notice,.borai-inside .section-title { flex-wrap:wrap; }
+.borai-inside h1,.borai-inside h2,.borai-inside h3,.borai-inside p,.borai-inside .location { overflow-wrap:anywhere; }
+.borai-inside .bh-toast { flex-wrap:wrap; }
+.borai-inside .bh-toast button { border:1px solid #c4f67b; color:white; background:transparent; border-radius:8px; padding:8px; }
+.borai-inside .bh-illustration { background:linear-gradient(135deg,#dcecc6,#faf3d9); position:relative; isolation:isolate; overflow:hidden; }
+.borai-inside .bh-illustration:before { content:''; position:absolute; inset:0; background:url('../assets/amazon-illustration.png') center/cover; opacity:.3; z-index:-1; }
+.borai-inside .bh-illustration span { padding:3px 10px; background:#fffff3ed; border-radius:20px; font-size:12px; color:#234e39; }
+.borai-inside .bh-illustration svg { filter:drop-shadow(0 2px 5px #fff); }
+.borai-inside .tone-coffee.bh-illustration,.borai-inside .tone-utensils.bh-illustration { background-color:#f0e0bc; }
+.borai-inside .bh-audit-list article { min-width:0; overflow-wrap:anywhere; }
+.borai-inside .bh-audit-list summary { display:flex; align-items:center; }
+@media(max-width:1150px) { .borai-inside .app-shell { grid-template-columns:220px minmax(0,1fr); } .borai-inside .hero-content { padding:26px; } }
+@media(max-width:900px) {
+ .borai-inside .app-shell { display:block; }
+ .borai-inside .side { height:auto; position:relative; overflow:visible; padding:12px 18px; display:grid; grid-template-columns:1fr auto; gap:12px; border-right:0; border-bottom:1px solid #dce6de; }
+ .borai-inside .side .brand { margin:0; }
+ .borai-inside .brand img { width:105px; }
+ .borai-inside .city,.borai-inside .account { display:none; }
+ .borai-inside .side nav { grid-column:1/-1; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; margin:0; }
+ .borai-inside .side nav button { flex-direction:column; text-align:center; justify-content:center; gap:4px; padding:8px 3px; font-size:12px; }
+ .borai-inside .side nav small { display:none; }
+ .borai-inside .bh-signout { position:static; grid-column:2; grid-row:1; padding:8px; }
+ .borai-inside .bh-today { grid-column:1/-1; margin:0; padding:16px; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:6px 18px; }
+ .borai-inside .bh-today h2 { margin:0; }
+ .borai-inside .bh-today>div { grid-column:1; grid-row:3/6; }
+ .borai-inside .bh-today .bh-weather-tip { margin:0; grid-column:2; grid-row:1/4; }
+ .borai-inside .bh-today .primary { grid-column:2; }
+ .borai-inside .bh-today>a,.borai-inside .bh-today>small { grid-column:1/-1; margin:0; }
+ .borai-inside main { padding:0 24px; }
+ .borai-inside .topbar { min-height:65px; height:auto; padding:12px 0; gap:10px; }
+ .borai-inside .location { max-width:65%; font-size:12px; }
+ .borai-inside .hero { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .borai-inside .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:600px) {
+ .borai-inside .side { padding:12px; }
+ .borai-inside .side nav button span { font-size:11px; line-height:1.25; }
+ .borai-inside main { padding:0 16px; }
+ .borai-inside .hero { grid-template-columns:1fr; }
+ .borai-inside .hero h1 { font-size:36px; }
+ .borai-inside .hero-photo { min-height:160px; }
+ .borai-inside .cards { grid-template-columns:1fr; gap:18px; }
+ .borai-inside .search-row { flex-direction:column; }
+ .borai-inside .region-control { align-self:stretch; }
+ .borai-inside .region-control select { max-width:none; font-size:16px; }
+ .borai-inside .search input { font-size:16px; }
+ .borai-inside .chips { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+ .borai-inside .chips button { padding:7px 5px; font-size:12px; }
+ .borai-inside .view-heading h1,.borai-inside .profile-page h1 { font-size:32px; letter-spacing:-1px; }
+ .borai-inside .bh-photo-settings { flex-direction:column; align-items:flex-start; padding:20px; }
+ .borai-inside .preferences { gap:8px; }
+ .borai-inside .preferences label { min-height:44px; padding:8px; border-radius:8px; background:#f3f7ec; }
+ .borai-inside .profile-form,.borai-inside .privacy,.borai-inside .history { padding:20px; }
+ .borai-inside .bh-audit-list article { padding:18px; }
+ .borai-inside .bh-dialog-content { padding:20px; }
+ .borai-inside .rating>div { gap:4px; }
+}
+
+/* Faixa de categorias e controles compactos em todas as larguras. */
+.borai-inside .chips { display:flex; flex-wrap:nowrap; overflow-x:auto; gap:8px; padding:4px 2px 10px; overscroll-behavior-x:contain; scroll-padding:4px; }
+.borai-inside .chips button { flex:0 0 auto; white-space:nowrap; padding:9px 15px; }
+.borai-inside .bh-signout { display:grid; place-items:center; width:44px; height:44px; padding:0; border:1px solid #d3dfd1; border-radius:50%; background:#f5f7ec; color:#00503b; position:absolute; top:20px; right:16px; }
+.borai-inside .side { position:sticky; }
+.borai-inside .side .brand img { width:140px; }
+.borai-inside .hero-photo img { object-fit:cover; object-position:55% 50%; }
+.borai-inside .bh-today { padding:14px; margin:18px 0; }
+.borai-inside .bh-today h2 { font-size:20px; margin:6px 0 10px; }
+.borai-inside .bh-today .bh-weather-tip { font-size:12px; margin:8px 0; }
+.borai-inside .bh-today .bh-temperature { font-size:28px; }
+@media(max-width:900px) {
+ .borai-inside .side { position:relative; padding-bottom:12px; }
+ .borai-inside .side nav { position:fixed; bottom:0; left:0; right:0; z-index:1100; background:#fffef7; border-top:1px solid #dce6de; padding:6px 8px calc(6px + env(safe-area-inset-bottom)); gap:2px; }
+ .borai-inside { padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
+ .borai-inside .side .brand img { width:110px; }
+ .borai-inside .bh-signout { position:static; }
+ .borai-inside .bh-today { margin:0; padding:12px; gap:4px 12px; }
+ .borai-inside .bh-today .bh-weather-tip { display:none; }
+ .borai-inside .bh-today>div { grid-row:2/5; }
+ .borai-inside .bh-today .primary { grid-row:2/4; align-self:center; }
+ .borai-inside .bh-today>a { grid-column:2; font-size:10px; }
+ .borai-inside .bh-today>small { grid-column:2; font-size:10px; }
+ .borai-inside .hero-content { padding:24px; }
+ .borai-inside .hero h1 { font-size:34px; }
+}
+@media(max-width:600px) {
+ .borai-inside .hero { position:relative; isolation:isolate; min-height:220px; display:block; }
+ .borai-inside .hero-photo { position:absolute; inset:0; min-height:0; z-index:-1; }
+ .borai-inside .hero-photo:after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,#003b2bef,#003b2b80); }
+ .borai-inside .hero-photo img { object-position:60% 50%; }
+ .borai-inside .hero-content { padding:22px; }
+ .borai-inside .hero h1 { font-size:30px; margin:10px 0; }
+ .borai-inside .hero p { font-size:14px; line-height:1.45; margin:0; }
+ .borai-inside .hero-badge { margin-top:12px; font-size:12px; }
+ .borai-inside .topbar { min-height:52px; }
+ .borai-inside .card-top,.borai-inside .bh-place-photo,.borai-inside .bh-no-photo { height:170px; }
+ .borai-inside .section-title h2 { font-size:24px; }
+}
+@media(min-width:901px) { .borai-inside .side .brand { max-width:calc(100% - 54px); } .borai-inside .side .brand img { max-width:100%; } }
+
+/* No layout móvel, o clima ocupa uma faixa própria junto à navegação. */
+.borai-inside .bh-weather-dock { display:none; }
+.borai-inside .bh-weather-panel { position:fixed; inset:auto 0 0; width:min(100%,560px); max-width:none; max-height:85dvh; margin:0 auto; padding:0; overflow:auto; overscroll-behavior:contain; border:1px solid #d0dfb9; border-bottom:0; border-radius:24px 24px 0 0; background:#fffef7; color:#193c30; box-shadow:0 -12px 40px #003b2b30; }
+.borai-inside .bh-weather-panel::backdrop { background:#06251b99; }
+.borai-inside .bh-weather-panel[open] { animation:bh-weather-enter .2s ease-out; }
+.borai-inside .bh-weather-panel-content { position:relative; padding:24px 22px calc(24px + env(safe-area-inset-bottom)); }
+.borai-inside .bh-weather-close { position:absolute; right:14px; top:12px; display:grid; place-items:center; width:44px; height:44px; border:1px solid #d3dfd1; border-radius:50%; background:#f0f5e8; color:#00503b; font-size:26px; }
+.borai-inside .bh-weather-panel .bh-today { display:flex; flex-direction:column; gap:12px; margin:0; padding:0; background:transparent; border:0; }
+.borai-inside .bh-weather-panel .bh-today h2 { font-size:25px; margin:0; padding-right:40px; }
+.borai-inside .bh-weather-panel .bh-today .eyebrow { padding-right:44px; }
+.borai-inside .bh-weather-panel .bh-today>div { display:block; }
+.borai-inside .bh-weather-panel .bh-today .bh-weather-tip { display:block; margin:0; font-size:14px; }
+.borai-inside .bh-weather-panel .bh-today .bh-temperature { font-size:40px; }
+.borai-inside .bh-weather-panel .bh-today>a,.borai-inside .bh-weather-panel .bh-today>small { margin:0; font-size:12px; }
+.borai-inside .bh-weather-panel .bh-weather-retry { align-self:flex-start; }
+.borai-inside .bh-weather-trigger:focus-visible,.borai-inside .bh-weather-close:focus-visible { outline:3px solid #4caf7a; outline-offset:2px; }
+@keyframes bh-weather-enter { from { transform:translateY(100%); } to { transform:translateY(0); } }
+@media(max-width:900px) {
+ .borai-inside .bh-weather-desktop { display:none; }
+ .borai-inside .side nav { height:calc(72px + env(safe-area-inset-bottom)); }
+ .borai-inside .bh-weather-dock { position:fixed; bottom:calc(72px + env(safe-area-inset-bottom)); left:0; right:0; z-index:1100; display:flex; align-items:center; justify-content:flex-end; height:52px; padding:4px 16px; background:#fffef7; border-top:1px solid #dce6de; }
+ .borai-inside .bh-weather-trigger { display:flex; align-items:center; justify-content:center; gap:7px; min-height:44px; padding:6px 14px; border:1px solid #d0dfb9; border-radius:24px; background:#edf4df; color:#00503b; font-size:13px; font-weight:600; }
+ .borai-inside { padding-bottom:calc(140px + env(safe-area-inset-bottom)); }
+}
+
+/* Marcas e imagens com texto: mostrar a composição inteira somente nos cards.
+   Os nomes dos arquivos também correspondem aos assets com hash do build. */
+.borai-inside .place-card .bh-place-photo:has(img:is(
+  [src*="/canto-peixada"],
+  [src*="/castelo-delicias"],
+  [src*="/caxiri"],
+  [src*="/coco-bambu"],
+  [src*="/moema-cafe"],
+  [src*="/parque-cidade-crianca"],
+  [src*="/porao-alemao"],
+  [src*="/quality-hotel"],
+  [src*="/shopping-vianorte"],
+  [src*="/sumauma-shopping"],
+  [src*="/tchibum-adrianopolis"]
+)) {
+  --bh-card-photo-fit:contain;
+  --bh-card-photo-padding:14px 44px 38px;
+  --bh-card-photo-transform:none;
+  background:#fff;
+}
+.borai-inside .place-card .bh-place-photo img {
+  object-fit:var(--bh-card-photo-fit,cover);
+  object-position:center;
+  padding:var(--bh-card-photo-padding,0);
+}
+.borai-inside .place-card:hover .bh-place-photo img {
+  transform:var(--bh-card-photo-transform,scale(1.035));
+}
+
+/* Espaço estável para a listagem, sem esticar os cards existentes. */
+.borai-inside .bh-results { min-height:320px; }
+.borai-inside .bh-results .empty { min-height:280px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.borai-inside .bh-results .empty>svg { margin:0; }
+.borai-inside .bh-suggest-layout { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:24px; align-items:start; }
+.borai-inside .bh-suggest-form,.borai-inside .bh-suggest-preview { min-width:0; padding:24px; border:1px solid #dfe9e1; border-radius:18px; background:#fff; }
+.borai-inside .bh-suggest-form { display:flex; flex-direction:column; }
+.borai-inside .bh-suggest-layout h2 { margin:0 0 18px; font-size:22px; }
+.borai-inside .bh-suggest-form label { margin-bottom:6px; font-size:14px; font-weight:600; }
+.borai-inside .bh-suggest-form input { width:100%; min-width:0; min-height:48px; padding:12px; margin-bottom:18px; border:1px solid #d6e3da; border-radius:10px; background:#fafcf9; color:#193c30; font:inherit; font-size:16px; }
+.borai-inside .bh-suggest-form .helper { margin:16px 0 0; font-size:12px; }
+.borai-inside .bh-suggest-preview iframe { display:block; width:100%; height:340px; border:0; border-radius:12px; background:#f2f6ef; margin-bottom:18px; }
+.borai-inside .bh-suggest-placeholder { min-height:380px; display:flex; flex-direction:column; justify-content:center; text-align:center; color:#617b69; }
+.borai-inside .bh-suggest-placeholder>span { color:#00503b; font-size:52px; }
+.borai-inside .bh-suggest-placeholder p { margin:0; }
+.borai-inside .bh-suggest-thanks { padding:18px; border-radius:12px; background:#edf4df; color:#234e39; }
+.borai-inside .bh-suggestion-card { padding:20px; border:1px solid #d0dfb9; border-radius:14px; background:#fafcf6; }
+.borai-inside .bh-suggestion-card h3 { margin:8px 0 16px; font-size:22px; }
+.borai-inside .bh-suggestion-card dl { margin:0 0 18px; }
+.borai-inside .bh-suggestion-card dt { font-size:12px; font-weight:600; color:#617b69; }
+.borai-inside .bh-suggestion-card dd { margin:0 0 10px; overflow-wrap:anywhere; }
+.borai-inside .bh-suggestion-card .bh-suggestion-status { display:inline-block; margin:0 0 10px; padding:6px 12px; border-radius:20px; background:#edf4df; color:#00503b; font-size:13px; font-weight:600; }
+.borai-inside .bh-suggestion-card small { display:block; color:#617b69; font-size:12px; }
+@media(max-width:1150px) { .borai-inside .bh-suggest-layout { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:900px) { .borai-inside .side nav { grid-template-columns:repeat(6,minmax(0,1fr)); } }
+@media(max-width:600px) {
+ .borai-inside .bh-results { min-height:280px; }
+ .borai-inside .bh-suggest-form,.borai-inside .bh-suggest-preview { padding:20px; }
+ .borai-inside .bh-suggest-preview iframe { height:280px; }
+ .borai-inside .bh-suggest-placeholder { min-height:220px; }
+ .borai-inside .side nav button span { font-size:10px; }
+}
+
+/* Acabamento dos controles internos; sem mudanças de estrutura ou comportamento. */
+.borai-inside :is(.primary,.secondary,.detail,.heart,.bh-signout,.bh-close,.bh-weather-close,.bh-weather-trigger,.chips button,.side nav button) { transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease; }
+.borai-inside button>svg,.borai-inside a>svg { flex-shrink:0; vertical-align:middle; }
+.borai-inside .primary { border:1px solid #00503b; border-radius:12px; font-weight:600; box-shadow:0 3px 9px #00503b14; }
+.borai-inside .secondary { border-color:#d5e3d8; border-radius:12px; background:#f5f8f1; }
+.borai-inside .detail { border:1px solid #dbe8dd; border-radius:11px; padding:10px 14px; gap:12px; background:#f3f8ee; color:#00503b; font-weight:600; }
+.borai-inside .detail>span { display:grid; place-items:center; width:24px; height:24px; border-radius:50%; background:#e2efd9; font-size:18px; line-height:1; flex-shrink:0; }
+.borai-inside .heart { border:1px solid #d8e5da; background:#fffffff5; color:#35634c; box-shadow:0 2px 8px #003b2b12; }
+.borai-inside .heart svg { width:20px; height:20px; stroke-width:1.8; }
+.borai-inside .heart.saved { background:#e3f2d4; border-color:#afcf94; color:#00503b; }
+.borai-inside .bh-signout { border-color:#d2e2d4; background:#f5f8ef; box-shadow:0 2px 6px #003b2b0a; }
+.borai-inside .bh-signout svg { width:19px; height:19px; stroke-width:1.8; }
+.borai-inside .side nav button { border-radius:12px; font-weight:600; }
+.borai-inside .side nav button.active { background:#00503b; box-shadow:0 3px 9px #00503b18; }
+.borai-inside .side nav button svg { width:20px; height:20px; stroke-width:1.8; }
+.borai-inside .bh-suggest-form .primary,.borai-inside .bh-suggest-preview>.primary { min-height:48px; padding:12px 20px; }
+.borai-inside .bh-suggest-preview>.primary { width:100%; }
+@media(hover:hover) {
+ .borai-inside .primary:not(:disabled):hover { background:#086147; border-color:#086147; box-shadow:0 4px 12px #00503b20; }
+ .borai-inside .secondary:not(:disabled):hover,.borai-inside .detail:hover { background:#e8f2df; border-color:#b9d2ac; color:#004733; }
+ .borai-inside .heart:not(:disabled):hover { background:#edf6e5; border-color:#afcf94; box-shadow:0 3px 10px #003b2b1c; }
+ .borai-inside .bh-signout:hover,.borai-inside .bh-close:hover,.borai-inside .bh-weather-close:hover { background:#e7f1dc; border-color:#afcf94; color:#004733; }
+ .borai-inside .side nav button:not(.active):hover { background:#edf4e7; color:#00503b; }
+ .borai-inside .side nav button.active:hover { background:#086147; }
+}
+@media(max-width:900px) { .borai-inside .side nav button svg { width:19px; height:19px; } .borai-inside .side nav button.active { box-shadow:0 2px 6px #00503b14; } }
+@media(prefers-reduced-motion:reduce) { .borai-inside :is(.primary,.secondary,.detail,.heart,.bh-signout,.bh-close,.bh-weather-close,.bh-weather-trigger,.chips button,.side nav button) { transition:none; } }
+
+/* Resumo compacto da conta antes do menu, próximo à marca e à cidade. */
+.borai-inside .side .city { margin-bottom:14px; }
+.borai-inside .side .account { display:flex; align-items:center; gap:10px; width:100%; min-width:0; margin:0 0 18px; padding:12px; border:1px solid #dce8d6; border-radius:13px; background:#f1f6e9; color:#234e39; font-size:13px; line-height:1.4; text-align:left; flex-shrink:0; }
+.borai-inside .side .account .bh-avatar { width:34px; height:34px; font-size:12px; }
+.borai-inside .side .account>span:not(.bh-avatar) { min-width:0; font-weight:600; }
+.borai-inside .side .account small { margin-top:3px; font-size:11px; font-weight:400; color:#61765e; }
+@media(hover:hover) { .borai-inside .side .account:hover { background:#e7f0dc; border-color:#bdd2ac; } }
+@media(max-width:900px) { .borai-inside .side .account { grid-column:1/-1; margin:0; padding:10px 12px; } }
+
+/* Resumo do perfil integrado ao topo somente no celular. */
+@media(max-width:600px) {
+ .borai-inside .side .account { min-height:44px; gap:8px; padding:5px 2px; border-color:transparent; border-radius:8px; background:transparent; box-shadow:none; font-size:12px; line-height:1.3; }
+ .borai-inside .side .account .bh-avatar { width:29px; height:29px; font-size:11px; }
+ .borai-inside .side .account small { margin-top:2px; font-size:10px; color:#71816c; }
+}
+@media(max-width:600px) and (hover:hover) { .borai-inside .side .account:hover { background:#f5f8f0; border-color:transparent; } }
+
+/* Identificador mínimo no celular, na mesma linha da marca. */
+.borai-inside .side .account .bh-account-short-name { display:none; }
+@media(max-width:600px) {
+ .borai-inside .side { grid-template-columns:minmax(0,1fr) auto auto; gap:8px; align-items:center; }
+ .borai-inside .side .brand { grid-column:1; grid-row:1; }
+ .borai-inside .side .account { grid-column:2; grid-row:1; width:auto; max-width:120px; min-height:44px; margin:0; padding:4px; gap:6px; border:0; border-radius:8px; background:transparent; box-shadow:none; font-size:11px; }
+ .borai-inside .side .account .bh-avatar { width:25px; height:25px; font-size:10px; }
+ .borai-inside .side .account .bh-account-full-name,.borai-inside .side .account small { display:none; }
+ .borai-inside .side .account .bh-account-short-name { display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-weight:500; }
+ .borai-inside .side .bh-signout { grid-column:3; grid-row:1; }
+}

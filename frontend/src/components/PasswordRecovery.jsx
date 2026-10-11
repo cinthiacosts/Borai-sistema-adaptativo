@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import logoEntrada from '../assets/logo-borai-cadastro.png'
+import logoEntrada from '../assets/borai-home-logo.png'
 const API=import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 export default function PasswordRecovery({token,onBack}) {
   const [email,setEmail]=useState(''),[senha,setSenha]=useState(''),[confirmar,setConfirmar]=useState('')

@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 
 import './App.css'
 
-import logoBorai from './assets/logo-borai-valida.png'
-import logoEntrada from './assets/logo-borai-cadastro.png'
+import logoBorai from './assets/borai-home-logo.png'
+import logoEntrada from './assets/borai-home-logo.png'
 import './styles/AuthBorai.css'
 
 import {
@@ -573,7 +573,6 @@ function App() {
               <button type="button" className={telaAuth === 'login' ? 'is-active' : ''} aria-pressed={telaAuth === 'login'} onClick={voltarLogin} disabled={carregandoLogin || carregandoCadastro}>Entrar</button>
               <button type="button" className={telaAuth === 'cadastro' ? 'is-active' : ''} aria-pressed={telaAuth === 'cadastro'} onClick={abrirCadastro} disabled={carregandoLogin || carregandoCadastro}>Criar conta</button>
             </div>
-            <p className="auth-step">Etapa {etapaCadastro} de 2 · {etapaCadastro === 1 ? 'Seus dados' : 'Seus interesses'}</p>
             {etapaCadastro === 1 && (
               <>
                 <div className="login-heading">
