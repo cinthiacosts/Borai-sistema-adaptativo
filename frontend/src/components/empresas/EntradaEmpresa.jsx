@@ -1,0 +1,4 @@
+import hero from '../../assets/borai-equipe-empresas.png'
+export default function EntradaEmpresa({ onDemo, onCadastro }) {
+  return <main className="be-entry"><div><span className="be-eyebrow">SEU NEGÓCIO FAZ PARTE DE MANAUS</span><h1>Seu lugar.<br />Novas conexões.<br /><em>Boraí Empresas.</em></h1><p>Uma prévia de como apresentar seu estabelecimento e acompanhar sua presença no Boraí.</p><div className="be-actions"><button className="be-primary" onClick={onDemo}>Acessar demonstração pronta →</button><button onClick={onCadastro}>Cadastrar minha empresa</button></div><small>Experimente sem conta, sem senha e sem compromisso.</small></div><div className="be-entry-image be-entry-team"><img src={hero} alt="Equipe Boraí Empresas, com nomes e áreas de atuação" /><div><span>FEITO PARA NEGÓCIOS LOCAIS</span><h2>Mais perto de quem<br />quer descobrir a cidade.</h2></div></div></main>
+}

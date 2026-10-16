@@ -1,5 +1,6 @@
 import PasswordRecovery from './components/PasswordRecovery'
 import HomeBorai from './components/HomeBorai'
+import EmpresasDemo from './components/empresas/EmpresasDemo'
 import { useEffect, useState } from 'react'
 
 import './App.css'
@@ -109,6 +110,7 @@ function obterIniciais(nome) {
 }
 
 function App() {
+  const [areaEmpresa, setAreaEmpresa] = useState(false)
   const [recoveryToken,setRecoveryToken]=useState(() => {
     const token=new URLSearchParams(window.location.hash.slice(1)).get('redefinir-senha')
     return token || null
@@ -544,6 +546,7 @@ function App() {
   // CADASTRO
   // =========================
 
+  if (areaEmpresa && !usuario) return <EmpresasDemo onBack={() => setAreaEmpresa(false)} />
   if (recoveryToken || (!usuario && telaAuth === 'recuperar')) return <PasswordRecovery token={recoveryToken} onBack={voltarDaRecuperacao}/>
 
   if (
@@ -908,6 +911,7 @@ function App() {
                   : 'Entrar'}
               </button>
               <button type="button" className="auth-show-password" onClick={() => setTelaAuth('recuperar')} disabled={carregandoLogin}>Esqueci minha senha</button>
+              <button type="button" className="auth-company-entry" onClick={() => setAreaEmpresa(true)} disabled={carregandoLogin}>Sou empresa</button>
             </form>
 
             <div className="login-register">
