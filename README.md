@@ -1,5 +1,58 @@
 # 🌿 BORAÍ
 
+[Acessar o Boraí](https://borai-site.onrender.com/)
+
+## Visão atual da plataforma
+
+O Boraí ajuda moradores, turistas e visitantes a descobrir lugares e experiências em Manaus. A área do cliente reúne busca e filtros por categoria, detalhes dos estabelecimentos, favoritos, preferências, histórico e recomendações justificadas. Os recursos ligados à conta dependem da API e da configuração do banco existentes.
+
+Em **Sou empresa → Criar perfil da empresa**, o Boraí Empresas oferece um cadastro em etapas: dados do negócio, características e prioridade, fotos opcionais, seleção de plano, resumo, confirmação e painel personalizado. É possível voltar e corrigir as etapas sem perder o preenchimento. A ação secundária **Explorar exemplo** abre o perfil ilustrativo Café do Rio, separado dos dados informados no cadastro.
+
+| Proposta de plano | Valor |
+|---|---:|
+| Experiência gratuita | R$ 0 por 90 dias |
+| Essencial | R$ 49/mês |
+| Conexão | R$ 99/mês |
+| Presença | R$ 149/mês |
+
+A experiência proposta dispensa cartão obrigatório e cobrança automática. Os benefícios e limites dos planos representam uma proposta comercial futura. A seleção e a confirmação são simuladas, sem solicitação de dados bancários ou processamento de pagamento.
+
+O cadastro empresarial e suas fotos ficam apenas na memória da sessão de apresentação; não criam login empresarial, persistência no banco ou publicação no catálogo real. A assistência usa modelos locais preparados, com texto editável e cópia. Respostas, planejamento sazonal e indicadores são ilustrativos: não há integração empresarial com IA, pesquisa em tempo real, previsão meteorológica ou plataformas de anúncios. Nenhum plano compra posição nas recomendações ou garante vendas.
+
+### Tecnologias e execução local
+
+O frontend usa **React, Vite, JavaScript e CSS** e inclui a dependência Leaflet para mapas. O backend existente usa **Node.js, Express, Mongoose e MongoDB**, com documentação Swagger. A demonstração empresarial funciona sem acessar o backend.
+
+Com Node.js e npm instalados, execute na raiz do repositório:
+
+```sh
+npm ci --prefix frontend
+npm run dev --prefix frontend
+```
+
+Abra o endereço informado pelo Vite, normalmente `http://localhost:5173`, e selecione **Sou empresa**. Para compilar, verificar o código e visualizar o build local:
+
+```sh
+npm run build --prefix frontend
+npm run lint --prefix frontend
+npm run preview --prefix frontend
+```
+
+Para executar os recursos conectados da área do cliente, configure localmente o backend com um MongoDB acessível e `MONGODB_URI`, sem versionar credenciais. Em outro terminal:
+
+```sh
+npm ci --prefix backend
+npm run dev --prefix backend
+```
+
+O script `npm start --prefix backend` também inicia a API; `npm test --prefix backend` executa os testes existentes. Por padrão, a API usa a porta 3000 e o frontend aponta para `http://localhost:3000/api`. A variável opcional `VITE_API_URL` define outro endereço durante a execução ou compilação local.
+
+O teste de navegação empresarial está em `frontend/tests/empresas.mjs` e requer Playwright/Chromium disponível no ambiente e o frontend local na porta 5173. Execute `node frontend/tests/empresas.mjs`; se necessário, indique o caminho de uma instalação existente de Playwright pela variável `BORAI_PLAYWRIGHT`. A variável opcional `BORAI_BASE_URL` permite verificar outra URL, mantendo as chamadas à API bloqueadas no navegador de teste. As capturas geradas em `frontend/visual-review/` são artefatos locais de revisão e não integram a publicação.
+
+No Windows PowerShell, use `npm.cmd` no lugar de `npm` caso a política de execução bloqueie `npm.ps1`.
+
+---
+
 ## 📍 Sistema Adaptativo de Recomendação
 
 ### ✨ Seu jeito de curtir, onde você estiver.
